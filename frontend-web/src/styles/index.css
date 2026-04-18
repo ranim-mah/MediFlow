@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Tajawal', 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink-50 text-ink-900 antialiased;
+  }
+
+  /* RTL-specific tweaks */
+  [dir='rtl'] {
+    font-family: 'Tajawal', 'Cairo', system-ui, sans-serif;
+  }
+
+  [dir='ltr'] {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-bold text-ink-900;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 font-semibold
+           transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-4 focus:ring-brand-200;
+  }
+  .btn-primary {
+    @apply btn bg-gradient-to-br from-brand-600 to-brand-800 text-white
+           hover:from-brand-700 hover:to-brand-900 shadow-soft;
+  }
+  .btn-outline {
+    @apply btn border-2 border-brand-600 text-brand-700 hover:bg-brand-50;
+  }
+  .btn-ghost {
+    @apply btn text-ink-700 hover:bg-ink-100;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-ink-200 bg-white px-4 py-2.5
+           text-ink-900 placeholder:text-ink-400
+           focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-100
+           transition-colors;
+  }
+
+  .card {
+    @apply rounded-2xl bg-white shadow-card p-6;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+}
+
+/* Hero background pattern */
+.hero-bg {
+  background:
+    radial-gradient(1200px 500px at 100% 0%, rgba(59, 147, 246, 0.35), transparent 60%),
+    radial-gradient(900px 500px at 0% 100%, rgba(30, 78, 175, 0.25), transparent 60%),
+    linear-gradient(135deg, #0e2344 0%, #1e4eaf 100%);
+}
