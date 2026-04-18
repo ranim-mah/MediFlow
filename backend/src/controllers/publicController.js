@@ -74,7 +74,7 @@ exports.quickBook = asyncHandler(async (req, res) => {
 
   res.status(201).json({
     success: true,
-    message: 'Demande de reservation envoyee. La clinique vous contactera pour confirmation.',
+    message: 'Demande de réservation envoyée. La clinique vous contactera pour confirmation.',
     data: {
       appointmentId: appointment._id,
       patientCode: patient.patientCode,
