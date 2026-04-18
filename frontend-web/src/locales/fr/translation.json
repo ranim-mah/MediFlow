@@ -1,0 +1,74 @@
+{
+  "common": {
+    "appName": "Clinique Mediflow",
+    "brand": "Mediflow",
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "submit": "Envoyer",
+    "back": "Retour",
+    "next": "Suivant",
+    "error": "Une erreur est survenue",
+    "success": "Opération réussie",
+    "optional": "optionnel",
+    "required": "requis",
+    "login": "Connexion",
+    "register": "Créer un compte",
+    "logout": "Déconnexion"
+  },
+  "nav": {
+    "home": "Accueil",
+    "bookNow": "Réserver",
+    "features": "Avantages",
+    "services": "Services",
+    "contact": "Contact",
+    "adminPortal": "Portail Admin",
+    "patientPortal": "Portail Patient"
+  },
+  "hero": {
+    "tagline": "Une expérience simplifiée de réservation et suivi",
+    "title": "Votre clinique, plus intelligente",
+    "titleEmoji": "💡",
+    "description": "Avec Mediflow, tous les détails de votre clinique dans un système unifié : gestion des dossiers patients, organisation des rendez-vous, analyses et radiologies, prescription intelligente avec alertes d'interactions, assistant vocal IA, bot WhatsApp, applications mobiles médecin et patient avec notifications push.",
+    "bookNow": "Réserver maintenant",
+    "enterPortal": "Accéder au portail patient",
+    "features": {
+      "organized": "Dossier médical organisé",
+      "results": "Résultats & analyses",
+      "notifications": "Notifications & suivi"
+    },
+    "workingHours": "Horaires",
+    "daily": "Tous les jours",
+    "address": "Adresse",
+    "addressValue": "Fayoum - Al Masallah"
+  },
+  "booking": {
+    "quickTitle": "Réservation rapide",
+    "subtitle": "Nouvelle demande de rendez-vous",
+    "fullName": "Nom complet",
+    "fullNamePlaceholder": "Entrez votre nom tel qu'il apparaîtra au dossier",
+    "phone": "Téléphone",
+    "phonePlaceholder": "+216 XX XXX XXX",
+    "email": "Email",
+    "emailPlaceholder": "optionnel",
+    "service": "Service demandé",
+    "selectService": "Choisissez un service",
+    "branch": "Succursale",
+    "selectBranch": "Choisissez une succursale",
+    "dateTime": "Date et heure souhaitées",
+    "notes": "Notes additionnelles",
+    "notesPlaceholder": "Précisez toute information utile pour préparer votre rendez-vous",
+    "submitRequest": "Envoyer la demande",
+    "success": "Demande envoyée avec succès",
+    "successDesc": "Nous vous contacterons bientôt pour confirmer le rendez-vous"
+  },
+  "services": {
+    "title": "Nos principaux services",
+    "subtitle": "Choisissez un service dans le formulaire de réservation ou contactez-nous pour être orienté.",
+    "badge": "Services",
+    "defaultDesc": "Service disponible à la réservation en ligne ou via l'équipe d'accueil."
+  },
+  "footer": {
+    "rights": "© 2026 Clinique Mediflow — Tous droits réservés"
+  }
+}

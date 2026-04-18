@@ -1,0 +1,74 @@
+{
+  "common": {
+    "appName": "Mediflow Clinic",
+    "brand": "Mediflow",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "error": "Something went wrong",
+    "success": "Success",
+    "optional": "optional",
+    "required": "required",
+    "login": "Sign in",
+    "register": "Create account",
+    "logout": "Sign out"
+  },
+  "nav": {
+    "home": "Home",
+    "bookNow": "Book now",
+    "features": "Features",
+    "services": "Services",
+    "contact": "Contact",
+    "adminPortal": "Admin portal",
+    "patientPortal": "Patient portal"
+  },
+  "hero": {
+    "tagline": "A simpler booking & follow-up experience",
+    "title": "Your clinic, smarter",
+    "titleEmoji": "💡",
+    "description": "With Mediflow, every detail of your clinic lives in one unified system: patient records, appointments, labs & imaging, smart prescriptions with drug interaction alerts, a voice AI assistant, a WhatsApp bot, and mobile apps for doctor and patient with push notifications.",
+    "bookNow": "Book an appointment",
+    "enterPortal": "Enter patient portal",
+    "features": {
+      "organized": "Organized medical file",
+      "results": "Results & lab reports",
+      "notifications": "Notifications & follow-up"
+    },
+    "workingHours": "Working hours",
+    "daily": "Every day",
+    "address": "Address",
+    "addressValue": "Fayoum - Al Masallah"
+  },
+  "booking": {
+    "quickTitle": "Quick booking",
+    "subtitle": "New appointment request",
+    "fullName": "Full name",
+    "fullNamePlaceholder": "As it should appear on the medical record",
+    "phone": "Phone number",
+    "phonePlaceholder": "+216 XX XXX XXX",
+    "email": "Email",
+    "emailPlaceholder": "optional",
+    "service": "Service",
+    "selectService": "Pick a service",
+    "branch": "Branch",
+    "selectBranch": "Pick a branch",
+    "dateTime": "Preferred date & time",
+    "notes": "Additional notes",
+    "notesPlaceholder": "Any detail that helps our team prepare your visit",
+    "submitRequest": "Submit request",
+    "success": "Booking request submitted",
+    "successDesc": "We'll contact you shortly to confirm your appointment"
+  },
+  "services": {
+    "title": "Our main services",
+    "subtitle": "Pick a service from the booking form or contact us for guidance.",
+    "badge": "Services",
+    "defaultDesc": "Service available for online booking or through our reception team."
+  },
+  "footer": {
+    "rights": "© 2026 Mediflow Clinic — All rights reserved"
+  }
+}
