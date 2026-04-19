@@ -15,5 +15,6 @@ router.get('/dashboard', c.getDashboard);
 router.get('/patients', c.listPatients);
 router.get('/patients/:id', c.getPatientDetails);
 router.get('/appointments/calendar', c.getCalendar);
+router.patch('/appointments/:id/status', c.updateAppointmentStatus);
 
 module.exports = router;

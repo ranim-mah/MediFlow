@@ -1,7 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Users, UserCog, UserRoundCheck, CalendarClock, Loader2 } from 'lucide-react';
 import { adminApi } from '@/lib/adminApi';
 import { formatDateTime } from '@/lib/dates';
+
+const statusLabel = {
+  pending: 'قيد المراجعة',
+  confirmed: 'مؤكد',
+  waiting: 'انتظار',
+  in_progress: 'جاري',
+  completed: 'منجز',
+  cancelled: 'ملغي',
+  no_show: 'لم يحضر',
+};
 
 function StatCard({ label, value, icon: Icon }) {
   return (
@@ -16,9 +26,18 @@ function StatCard({ label, value, icon: Icon }) {
 }
 
 export default function AdminDashboardPage() {
+  const qc = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'dashboard'],
     queryFn: () => adminApi.getDashboard().then((r) => r.data),
+  });
+
+  const statusMutation = useMutation({
+    mutationFn: ({ id, status, reason }) => adminApi.updateAppointmentStatus({ id, status, reason }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+      qc.invalidateQueries({ queryKey: ['admin', 'calendar'] });
+    },
   });
 
   if (isLoading) {
@@ -65,7 +84,32 @@ export default function AdminDashboardPage() {
                     {a.doctor || 'بدون طبيب'}
                     {' · '}
                     {a.branch?.name || '—'}
+                    {' · '}
+                    <span className="font-semibold">{statusLabel[a.status] || a.status}</span>
                   </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      onClick={() => statusMutation.mutate({ id: a._id, status: 'confirmed' })}
+                      disabled={statusMutation.isPending || a.status === 'confirmed'}
+                      className="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      تأكيد
+                    </button>
+                    <button
+                      onClick={() => statusMutation.mutate({ id: a._id, status: 'waiting' })}
+                      disabled={statusMutation.isPending || a.status === 'waiting'}
+                      className="rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      تحويل للانتظار
+                    </button>
+                    <button
+                      onClick={() => statusMutation.mutate({ id: a._id, status: 'cancelled', reason: 'Annule par administration' })}
+                      disabled={statusMutation.isPending || a.status === 'cancelled'}
+                      className="rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      إلغاء
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

@@ -2,15 +2,22 @@ import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Search, Loader2 } from 'lucide-react';
 import { adminApi } from '@/lib/adminApi';
-import { formatDate } from '@/lib/dates';
+import { formatDate, formatDateTime } from '@/lib/dates';
 
 export default function AdminPatientsPage() {
   const [q, setQ] = useState('');
   const [risk, setRisk] = useState('');
+  const [selectedPatientId, setSelectedPatientId] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'patients', q, risk],
     queryFn: () => adminApi.listPatients({ q, risk, page: 1, limit: 50 }).then((r) => r.data),
+  });
+
+  const { data: detailsData, isLoading: loadingDetails } = useQuery({
+    queryKey: ['admin', 'patient-details', selectedPatientId],
+    queryFn: () => adminApi.getPatientDetails(selectedPatientId).then((r) => r.data),
+    enabled: Boolean(selectedPatientId),
   });
 
   const items = data?.items || [];
@@ -71,7 +78,11 @@ export default function AdminPatientsPage() {
             </thead>
             <tbody>
               {rows.map((p) => (
-                <tr key={p._id} className="border-b border-ink-50">
+                <tr
+                  key={p._id}
+                  className="cursor-pointer border-b border-ink-50 hover:bg-ink-50/60"
+                  onClick={() => setSelectedPatientId(p._id)}
+                >
                   <td className="px-3 py-2 font-semibold">{p.patientCode}</td>
                   <td className="px-3 py-2">
                     <div className="font-semibold text-ink-900">{p.fullName}</div>
@@ -87,6 +98,83 @@ export default function AdminPatientsPage() {
           </table>
         )}
       </div>
+
+      {selectedPatientId && (
+        <div className="fixed inset-0 z-50 bg-ink-950/40 p-4 backdrop-blur-sm md:p-8">
+          <div className="mx-auto h-full w-full max-w-4xl overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl md:p-6">
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-black text-ink-900">تفاصيل ملف المريض</h2>
+                <p className="mt-1 text-sm text-ink-500">عرض الموعدات والزيارات والوصفات والتحاليل</p>
+              </div>
+              <button className="rounded-lg border border-ink-200 px-3 py-1.5 text-sm" onClick={() => setSelectedPatientId(null)}>
+                إغلاق
+              </button>
+            </div>
+
+            {loadingDetails ? (
+              <div className="flex min-h-[260px] items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-brand-600" />
+              </div>
+            ) : (
+              <>
+                <div className="grid gap-3 rounded-xl bg-ink-50 p-4 text-sm md:grid-cols-2">
+                  <div>
+                    <span className="text-ink-500">الاسم:</span>{' '}
+                    <strong>{detailsData?.patient?.fullName || '—'}</strong>
+                  </div>
+                  <div>
+                    <span className="text-ink-500">الكود:</span>{' '}
+                    <strong>{detailsData?.patient?.patientCode || '—'}</strong>
+                  </div>
+                  <div>
+                    <span className="text-ink-500">الهاتف:</span>{' '}
+                    <strong dir="ltr">{detailsData?.patient?.phone || '—'}</strong>
+                  </div>
+                  <div>
+                    <span className="text-ink-500">الفصيلة:</span>{' '}
+                    <strong>{detailsData?.patient?.bloodType || '—'}</strong>
+                  </div>
+                  <div>
+                    <span className="text-ink-500">الحساسية:</span>{' '}
+                    <strong>{detailsData?.patient?.allergies?.join('، ') || '—'}</strong>
+                  </div>
+                  <div>
+                    <span className="text-ink-500">الأمراض المزمنة:</span>{' '}
+                    <strong>{detailsData?.patient?.chronicConditions?.join('، ') || '—'}</strong>
+                  </div>
+                </div>
+
+                <div className="mt-5 grid gap-4 lg:grid-cols-2">
+                  <div className="rounded-xl border border-ink-100 p-4">
+                    <h3 className="mb-3 text-lg font-black">آخر المواعيد</h3>
+                    <div className="space-y-2 text-sm">
+                      {(detailsData?.files?.appointments || []).slice(0, 8).map((a) => (
+                        <div key={a._id} className="rounded-lg bg-ink-50 px-3 py-2">
+                          <div className="font-semibold">{formatDateTime(a.scheduledAt, 'ar')}</div>
+                          <div className="text-ink-600">{a.serviceId?.name?.ar || a.serviceId?.name?.fr || a.serviceId?.name?.en || 'خدمة'}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-ink-100 p-4">
+                    <h3 className="mb-3 text-lg font-black">آخر الزيارات</h3>
+                    <div className="space-y-2 text-sm">
+                      {(detailsData?.files?.visits || []).slice(0, 8).map((v) => (
+                        <div key={v._id} className="rounded-lg bg-ink-50 px-3 py-2">
+                          <div className="font-semibold">{formatDateTime(v.visitDate || v.createdAt, 'ar')}</div>
+                          <div className="text-ink-600">{v.chiefComplaint || 'بدون شكوى مسجلة'}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

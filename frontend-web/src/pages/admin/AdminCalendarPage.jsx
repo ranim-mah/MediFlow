@@ -1,8 +1,18 @@
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { adminApi } from '@/lib/adminApi';
 import { formatDateTime } from '@/lib/dates';
+
+const statusLabel = {
+  pending: 'قيد المراجعة',
+  confirmed: 'مؤكد',
+  waiting: 'انتظار',
+  in_progress: 'جاري',
+  completed: 'منجز',
+  cancelled: 'ملغي',
+  no_show: 'لم يحضر',
+};
 
 const toMonthRange = (monthValue) => {
   const [y, m] = monthValue.split('-').map(Number);
@@ -15,6 +25,7 @@ const toMonthRange = (monthValue) => {
 };
 
 export default function AdminCalendarPage() {
+  const qc = useQueryClient();
   const now = new Date();
   const [month, setMonth] = useState(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`);
   const [branchId, setBranchId] = useState('');
@@ -24,6 +35,14 @@ export default function AdminCalendarPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'calendar', month, branchId],
     queryFn: () => adminApi.getCalendar({ ...range, branchId }).then((r) => r.data),
+  });
+
+  const statusMutation = useMutation({
+    mutationFn: ({ id, status, reason }) => adminApi.updateAppointmentStatus({ id, status, reason }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'calendar'] });
+      qc.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+    },
   });
 
   const branches = data?.branches || [];
@@ -102,8 +121,31 @@ export default function AdminCalendarPage() {
                     {' · '}
                     {e.branch?.name || '—'}
                     {' · '}
-                    <span className="font-semibold">{e.status}</span>
+                    <span className="font-semibold">{statusLabel[e.status] || e.status}</span>
                   </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      onClick={() => statusMutation.mutate({ id: e._id, status: 'confirmed' })}
+                      disabled={statusMutation.isPending || e.status === 'confirmed'}
+                      className="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      تأكيد
+                    </button>
+                    <button
+                      onClick={() => statusMutation.mutate({ id: e._id, status: 'waiting' })}
+                      disabled={statusMutation.isPending || e.status === 'waiting'}
+                      className="rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      انتظار
+                    </button>
+                    <button
+                      onClick={() => statusMutation.mutate({ id: e._id, status: 'cancelled', reason: 'Annule depuis calendrier admin' })}
+                      disabled={statusMutation.isPending || e.status === 'cancelled'}
+                      className="rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      إلغاء
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

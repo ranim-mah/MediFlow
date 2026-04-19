@@ -251,3 +251,59 @@ exports.getCalendar = asyncHandler(async (req, res) => {
     },
   });
 });
+
+/**
+ * PATCH /api/admin/appointments/:id/status
+ * Body: { status, reason? }
+ */
+exports.updateAppointmentStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status, reason } = req.body || {};
+
+  const allowed = [
+    APPOINTMENT_STATUS.PENDING,
+    APPOINTMENT_STATUS.CONFIRMED,
+    APPOINTMENT_STATUS.WAITING,
+    APPOINTMENT_STATUS.IN_PROGRESS,
+    APPOINTMENT_STATUS.COMPLETED,
+    APPOINTMENT_STATUS.CANCELLED,
+    APPOINTMENT_STATUS.NO_SHOW,
+  ];
+
+  if (!allowed.includes(status)) {
+    throw new ApiError(400, 'Statut de rendez-vous invalide');
+  }
+
+  const appointment = await Appointment.findById(id);
+  if (!appointment) throw new ApiError(404, 'Rendez-vous introuvable');
+
+  appointment.status = status;
+
+  if (status === APPOINTMENT_STATUS.CANCELLED) {
+    appointment.cancelledAt = new Date();
+    appointment.cancelReason = String(reason || '').trim() || undefined;
+    appointment.cancelledBy = req.user?._id;
+  }
+
+  if (status === APPOINTMENT_STATUS.IN_PROGRESS) {
+    appointment.startedAt = appointment.startedAt || new Date();
+  }
+
+  if (status === APPOINTMENT_STATUS.COMPLETED) {
+    appointment.completedAt = appointment.completedAt || new Date();
+  }
+
+  await appointment.save();
+
+  const updated = await Appointment.findById(appointment._id)
+    .populate('patientId', 'fullName patientCode phone')
+    .populate('serviceId', 'name')
+    .populate('branchId', 'name city')
+    .populate({ path: 'doctorId', populate: { path: 'userId', select: 'fullName' } });
+
+  res.json({
+    success: true,
+    message: 'Statut du rendez-vous mis a jour',
+    data: updated,
+  });
+});

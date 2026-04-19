@@ -18,4 +18,6 @@ export const adminApi = {
     if (branchId) params.set('branchId', branchId);
     return api.get(`/admin/appointments/calendar?${params.toString()}`);
   },
+  updateAppointmentStatus: ({ id, status, reason }) =>
+    api.patch(`/admin/appointments/${id}/status`, { status, reason }),
 };
