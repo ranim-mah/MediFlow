@@ -8,11 +8,38 @@ export default defineConfig({
     chunkSizeWarningLimit: 700,
     rollupOptions: {
       output: {
-        manualChunks: {
-          reactVendor: ['react', 'react-dom', 'react-router-dom'],
-          dataVendor: ['@tanstack/react-query', 'axios', 'zustand', 'date-fns'],
-          i18nVendor: ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
-          uiVendor: ['react-hot-toast', 'lucide-react', 'clsx', 'tailwind-merge'],
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+
+          if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/react-router-dom/')) {
+            return 'reactVendor';
+          }
+
+          if (
+            id.includes('/@tanstack/react-query/') ||
+            id.includes('/axios/') ||
+            id.includes('/zustand/') ||
+            id.includes('/date-fns/')
+          ) {
+            return 'dataVendor';
+          }
+
+          if (
+            id.includes('/i18next/') ||
+            id.includes('/react-i18next/') ||
+            id.includes('/i18next-browser-languagedetector/')
+          ) {
+            return 'i18nVendor';
+          }
+
+          if (
+            id.includes('/react-hot-toast/') ||
+            id.includes('/lucide-react/') ||
+            id.includes('/clsx/') ||
+            id.includes('/tailwind-merge/')
+          ) {
+            return 'uiVendor';
+          }
         },
       },
     },
