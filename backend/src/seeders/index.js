@@ -1,9 +1,10 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const connectDB = require('../config/db');
-const { ROLES } = require('../utils/constants');
+const { ROLES, APPOINTMENT_STATUS } = require('../utils/constants');
 const {
   User, Branch, Service, Patient, Doctor, Staff,
+  Appointment, Visit, Prescription, LabTest, Radiology, Notification, Queue,
 } = require('../models');
 
 const run = async () => {
@@ -18,6 +19,13 @@ const run = async () => {
     Patient.deleteMany({}),
     Doctor.deleteMany({}),
     Staff.deleteMany({}),
+    Appointment.deleteMany({}),
+    Visit.deleteMany({}),
+    Prescription.deleteMany({}),
+    LabTest.deleteMany({}),
+    Radiology.deleteMany({}),
+    Notification.deleteMany({}),
+    Queue.deleteMany({}),
   ]);
   console.log('🧹 Collections nettoyées');
 
@@ -173,6 +181,136 @@ const run = async () => {
     branchId: mainBranch._id,
   });
   console.log('🧑 2 patients créés');
+
+  // --- Demo data for patient 1 (so the portal is not empty)
+  const patient1 = await Patient.findOne({ patientCode: 'P002140' });
+  const drNader = await Doctor.findOne({ userId: drNaderUser._id });
+
+  // Upcoming appointment (in 3 days)
+  const nextAppt = await Appointment.create({
+    patientId: patient1._id,
+    doctorId: drNader._id,
+    serviceId: services[2]._id, // ECG
+    branchId: mainBranch._id,
+    scheduledAt: new Date(Date.now() + 3 * 24 * 3600 * 1000),
+    status: APPOINTMENT_STATUS.PENDING,
+    source: 'patient_portal',
+  });
+
+  // Past appointment (1 month ago, completed)
+  await Appointment.create({
+    patientId: patient1._id,
+    doctorId: drNader._id,
+    serviceId: services[0]._id,
+    branchId: mainBranch._id,
+    scheduledAt: new Date(Date.now() - 30 * 24 * 3600 * 1000),
+    status: APPOINTMENT_STATUS.COMPLETED,
+    source: 'admin',
+  });
+
+  // Past visit
+  const visit = await Visit.create({
+    patientId: patient1._id,
+    doctorId: drNader._id,
+    branchId: mainBranch._id,
+    serviceId: services[0]._id,
+    visitDate: new Date(Date.now() - 30 * 24 * 3600 * 1000),
+    complaint: 'ضيق في التنفس',
+    diagnosis: 'فحص دوري — لا توجد علامات خطر',
+    plan: 'متابعة بعد شهر',
+    decision: 'لا علاج دوائي مطلوب',
+    status: 'completed',
+  });
+
+  // Prescription
+  await Prescription.create({
+    patientId: patient1._id,
+    doctorId: drNader._id,
+    visitId: visit._id,
+    branchId: mainBranch._id,
+    medications: [
+      { name: 'Aspirine', dosage: '100 mg', frequency: '1x/jour', duration: '30 jours', instructions: 'Après le dîner' },
+    ],
+    notes: 'Contrôle dans 1 mois',
+    issuedAt: new Date(Date.now() - 30 * 24 * 3600 * 1000),
+  });
+
+  // Lab test
+  await LabTest.create({
+    patientId: patient1._id,
+    doctorId: drNader._id,
+    visitId: visit._id,
+    branchId: mainBranch._id,
+    tests: [{ name: 'CBC' }, { name: 'Glycémie à jeun' }],
+    status: 'completed',
+    resultText: 'Tous les paramètres dans les normes.',
+    requestedAt: new Date(Date.now() - 30 * 24 * 3600 * 1000),
+    resultEnteredAt: new Date(Date.now() - 25 * 24 * 3600 * 1000),
+  });
+
+  // Radiology
+  await Radiology.create({
+    patientId: patient1._id,
+    doctorId: drNader._id,
+    branchId: mainBranch._id,
+    exams: [{ name: 'Rx thorax' }],
+    status: 'completed',
+    reportText: 'Pas d\'anomalie visible.',
+    requestedAt: new Date(Date.now() - 25 * 24 * 3600 * 1000),
+    reportEnteredAt: new Date(Date.now() - 20 * 24 * 3600 * 1000),
+  });
+
+  // Notifications
+  await Notification.insertMany([
+    {
+      userId: patient1User._id,
+      type: 'appointment_reminder',
+      title: 'تذكير بموعدك القادم',
+      body: 'لديك موعد بعد 3 أيام مع د. نادر الأمين',
+      channels: ['in_app'],
+      priority: 'high',
+      link: '/portal/appointments',
+    },
+    {
+      userId: patient1User._id,
+      type: 'lab_result_ready',
+      title: 'نتيجة تحليل جاهزة',
+      body: 'نتيجة تحليل CBC متاحة الآن',
+      channels: ['in_app', 'push'],
+      isRead: true,
+      readAt: new Date(),
+    },
+    {
+      userId: patient1User._id,
+      type: 'prescription_ready',
+      title: 'روشتة جديدة',
+      body: 'تمت إضافة روشتة جديدة إلى ملفك الطبي',
+      channels: ['in_app'],
+    },
+  ]);
+
+  // Queue entry for today
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  await Queue.create({
+    appointmentId: nextAppt._id,
+    patientId: patient1._id,
+    doctorId: drNader._id,
+    branchId: mainBranch._id,
+    queueDate: today,
+    queueNumber: 1,
+    status: 'waiting',
+  });
+
+  // Update patient stats
+  patient1.totalVisits = 1;
+  patient1.totalPrescriptions = 1;
+  patient1.totalLabTests = 1;
+  patient1.totalRadiology = 1;
+  patient1.lastVisitAt = visit.visitDate;
+  await patient1.save();
+
+  console.log('📊 Données démo créées pour le patient 1 (RDV, visite, ordonnance, labo, radio, notifs, queue)');
 
   console.log('\n✅ Seeding terminé ! Identifiants de test :\n');
   console.log('  Admin       → admin@mediflow.test        / admin123');
