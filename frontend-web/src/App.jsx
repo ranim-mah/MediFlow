@@ -22,6 +22,7 @@ const NotificationsPage = lazy(() => import('@/pages/portal/NotificationsPage'))
 
 const AdminLayout = lazy(() => import('@/layouts/AdminLayout'));
 const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage'));
+const AdminAppointmentsPage = lazy(() => import('@/pages/admin/AdminAppointmentsPage'));
 const AdminPatientsPage = lazy(() => import('@/pages/admin/AdminPatientsPage'));
 const AdminCalendarPage = lazy(() => import('@/pages/admin/AdminCalendarPage'));
 
@@ -83,6 +84,7 @@ export default function App() {
         }
       >
         <Route index element={lazyElement(AdminDashboardPage)} />
+        <Route path="appointments" element={lazyElement(AdminAppointmentsPage)} />
         <Route path="patients" element={lazyElement(AdminPatientsPage)} />
         <Route path="calendar" element={lazyElement(AdminCalendarPage)} />
       </Route>

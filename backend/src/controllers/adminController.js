@@ -253,6 +253,79 @@ exports.getCalendar = asyncHandler(async (req, res) => {
 });
 
 /**
+ * GET /api/admin/appointments
+ * Query: q, status, branchId, dateFrom, dateTo, page, limit
+ */
+exports.listAppointments = asyncHandler(async (req, res) => {
+  const q = String(req.query.q || '').trim();
+  const status = String(req.query.status || '').trim();
+  const branchId = String(req.query.branchId || '').trim();
+  const dateFrom = String(req.query.dateFrom || '').trim();
+  const dateTo = String(req.query.dateTo || '').trim();
+
+  const page = Math.max(parseInt(req.query.page || '1', 10), 1);
+  const limit = Math.min(Math.max(parseInt(req.query.limit || '20', 10), 1), 100);
+  const skip = (page - 1) * limit;
+
+  const filter = {};
+  if (status) filter.status = status;
+  if (branchId) filter.branchId = branchId;
+
+  if (dateFrom || dateTo) {
+    filter.scheduledAt = {};
+    if (dateFrom) {
+      const d = new Date(dateFrom);
+      if (Number.isNaN(d.getTime())) throw new ApiError(400, 'dateFrom invalide');
+      filter.scheduledAt.$gte = d;
+    }
+    if (dateTo) {
+      const d = new Date(dateTo);
+      if (Number.isNaN(d.getTime())) throw new ApiError(400, 'dateTo invalide');
+      d.setHours(23, 59, 59, 999);
+      filter.scheduledAt.$lte = d;
+    }
+  }
+
+  if (q) {
+    const patients = await Patient.find({
+      $or: [
+        { fullName: { $regex: q, $options: 'i' } },
+        { phone: { $regex: q, $options: 'i' } },
+        { patientCode: { $regex: q, $options: 'i' } },
+      ],
+    }).select('_id');
+    filter.patientId = { $in: patients.map((p) => p._id) };
+  }
+
+  const [items, total, branches] = await Promise.all([
+    Appointment.find(filter)
+      .sort({ scheduledAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('patientId', 'fullName patientCode phone')
+      .populate('serviceId', 'name price currency')
+      .populate('branchId', 'name city')
+      .populate({ path: 'doctorId', populate: { path: 'userId', select: 'fullName' } }),
+    Appointment.countDocuments(filter),
+    Branch.find({ isActive: true }).select('name city').sort({ isMain: -1, name: 1 }),
+  ]);
+
+  res.json({
+    success: true,
+    data: {
+      items,
+      branches,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.max(Math.ceil(total / limit), 1),
+      },
+    },
+  });
+});
+
+/**
  * PATCH /api/admin/appointments/:id/status
  * Body: { status, reason? }
  */

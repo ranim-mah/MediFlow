@@ -12,6 +12,7 @@ router.use(
 );
 
 router.get('/dashboard', c.getDashboard);
+router.get('/appointments', c.listAppointments);
 router.get('/patients', c.listPatients);
 router.get('/patients/:id', c.getPatientDetails);
 router.get('/appointments/calendar', c.getCalendar);

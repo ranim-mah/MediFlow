@@ -16,11 +16,25 @@ api.interceptors.request.use((config) => {
 
 // Simple token refresh mechanism — dedupes concurrent refreshes
 let refreshing = null;
+
+const readPersistedAuth = () => {
+  const raw = localStorage.getItem('mediflow.auth');
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    // Corrupted persisted auth can happen after schema/version changes.
+    localStorage.removeItem('mediflow.auth');
+    localStorage.removeItem('mediflow.accessToken');
+    return null;
+  }
+};
+
 const refreshAccessToken = async () => {
   if (refreshing) return refreshing;
   refreshing = (async () => {
-    const raw = localStorage.getItem('mediflow.auth');
-    const refreshToken = raw ? JSON.parse(raw).state?.refreshToken : null;
+    const persisted = readPersistedAuth();
+    const refreshToken = persisted?.state?.refreshToken || null;
     if (!refreshToken) throw new Error('No refresh token');
     const { data } = await axios.post(
       (import.meta.env.VITE_API_URL || '/api') + '/auth/refresh',
@@ -29,10 +43,9 @@ const refreshAccessToken = async () => {
     const newToken = data.data.accessToken;
     localStorage.setItem('mediflow.accessToken', newToken);
     // Also update zustand-persisted state
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      parsed.state.accessToken = newToken;
-      localStorage.setItem('mediflow.auth', JSON.stringify(parsed));
+    if (persisted?.state) {
+      persisted.state.accessToken = newToken;
+      localStorage.setItem('mediflow.auth', JSON.stringify(persisted));
     }
     return newToken;
   })();

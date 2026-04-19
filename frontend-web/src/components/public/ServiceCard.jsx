@@ -34,7 +34,7 @@ export default function ServiceCard({ service }) {
       <p className="text-sm leading-relaxed text-ink-500">{desc}</p>
       {service.price > 0 && (
         <div className="mt-4 inline-flex items-center gap-1 rounded-lg bg-brand-50 px-3 py-1 text-sm font-bold text-brand-700">
-          {service.price} {service.currency || 'EGP'}
+          {service.price} {service.currency || 'DT'}
         </div>
       )}
     </article>

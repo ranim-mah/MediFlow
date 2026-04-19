@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
-import { LayoutDashboard, Users, CalendarDays, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, CalendarDays, ClipboardList, LogOut } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/lib/authApi';
 import { cn } from '@/lib/cn';
@@ -9,6 +9,7 @@ export default function AdminNavbar() {
 
   const links = [
     { to: '/admin', end: true, label: 'لوحة التحكم', icon: LayoutDashboard },
+    { to: '/admin/appointments', label: 'المواعيد', icon: ClipboardList },
     { to: '/admin/patients', label: 'المرضى', icon: Users },
     { to: '/admin/calendar', label: 'الروزنامة', icon: CalendarDays },
   ];

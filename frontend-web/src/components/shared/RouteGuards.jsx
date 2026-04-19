@@ -5,11 +5,14 @@ export function ProtectedRoute({ children, roles }) {
   const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
 
-  if (!isAuthenticated) {
+  const role = user?.role;
+
+  // Treat partial/corrupted auth state as logged-out.
+  if (!isAuthenticated || !role) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (roles && !roles.includes(user?.role)) {
+  if (roles && !roles.includes(role)) {
     return <Navigate to="/" replace />;
   }
 
@@ -18,8 +21,10 @@ export function ProtectedRoute({ children, roles }) {
 
 export function PublicOnlyRoute({ children }) {
   const { isAuthenticated, user } = useAuthStore();
-  if (isAuthenticated) {
-    const dest = user?.role === 'patient' ? '/portal' : '/admin';
+
+  // If auth is inconsistent (no role), allow login/register to render.
+  if (isAuthenticated && user?.role) {
+    const dest = user.role === 'patient' ? '/portal' : '/admin';
     return <Navigate to={dest} replace />;
   }
   return children || <Outlet />;

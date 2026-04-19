@@ -50,7 +50,7 @@
     "workingHours": "مواعيد العمل",
     "daily": "يوميا",
     "address": "العنوان",
-    "addressValue": "الفيوم - المسلة"
+    "addressValue": "تونس - شارع الحبيب بورقيبة"
   },
   "booking": {
     "quickTitle": "حجز سريع",
@@ -58,7 +58,7 @@
     "fullName": "الاسم بالكامل",
     "fullNamePlaceholder": "اكتب اسمك كما سيظهر في الملف",
     "phone": "رقم الهاتف",
-    "phonePlaceholder": "01xxxxxxxxx",
+    "phonePlaceholder": "+216 XX XXX XXX",
     "email": "البريد الإلكتروني",
     "emailPlaceholder": "اختياري",
     "service": "الخدمة المطلوبة",
@@ -82,7 +82,7 @@
     "loginTitle": "بوابة المرضى",
     "loginSubtitle": "سجل الدخول للوصول إلى حسابك",
     "identifier": "رقم المريض أو الجوال أو البريد الإلكتروني",
-    "identifierPlaceholder": "مثال: 010... أو name@email.com",
+    "identifierPlaceholder": "مثال: +216... أو name@email.com",
     "password": "كلمة المرور",
     "forgotPassword": "نسيت كلمة المرور؟",
     "forgotHint": "لو الحساب غير مفعل تواصل مع العيادة.",

@@ -48,13 +48,37 @@ export default function QuickBookingForm() {
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
+  const normalizeTunisiaPhone = (value) => {
+    const cleaned = String(value || '').replace(/\s+/g, '');
+    const digitsOnly = cleaned.replace(/\D/g, '');
+
+    // Accept 8-digit local form or +216 / 216 prefixes.
+    if (/^\d{8}$/.test(digitsOnly)) return `+216${digitsOnly}`;
+    if (/^216\d{8}$/.test(digitsOnly)) return `+${digitsOnly}`;
+    if (/^\+216\d{8}$/.test(cleaned)) return cleaned;
+    return null;
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
     if (!form.fullName || !form.phone || !form.branchId || !form.scheduledAt) {
       toast.error(t('common.error'));
       return;
     }
-    bookMut.mutate(form);
+
+    const normalizedPhone = normalizeTunisiaPhone(form.phone);
+    if (!normalizedPhone) {
+      const msg =
+        lang === 'fr'
+          ? 'Numéro tunisien invalide. Utilisez +216 XX XXX XXX.'
+          : lang === 'en'
+          ? 'Invalid Tunisian phone number. Use +216 XX XXX XXX.'
+          : 'رقم تونسي غير صالح. استعمل +216 XX XXX XXX.';
+      toast.error(msg);
+      return;
+    }
+
+    bookMut.mutate({ ...form, phone: normalizedPhone });
   };
 
   const getServiceLabel = (s) => s.name?.[lang] || s.name?.ar || s.name?.en || '—';

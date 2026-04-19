@@ -19,7 +19,7 @@ const serviceSchema = new mongoose.Schema(
 
     // Pricing
     price: { type: Number, default: 0 },
-    currency: { type: String, default: 'EGP' },
+    currency: { type: String, default: 'DT' },
 
     // Duration (minutes)
     defaultDuration: { type: Number, default: 30 },
