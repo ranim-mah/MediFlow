@@ -9,11 +9,33 @@ import { useAuthStore } from '@/stores/authStore';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 import Logo from '@/components/ui/Logo';
 
+const roleHome = (role) => {
+  if (role === 'patient') return '/portal';
+  if (role === 'doctor') return '/doctor';
+  return '/admin';
+};
+
+const canAccessPath = (role, path = '') => {
+  if (!path) return false;
+  if (role === 'patient') return path.startsWith('/portal');
+  if (role === 'doctor') return path.startsWith('/doctor') || path.startsWith('/admin');
+  return path.startsWith('/admin');
+};
+
 export default function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const fromPath = location.state?.from?.pathname || '';
+  const roleHint = new URLSearchParams(location.search).get('role') || '';
+
+  const loginTitle =
+    roleHint === 'admin' || fromPath.startsWith('/admin')
+      ? 'Portail admin'
+      : roleHint === 'doctor' || fromPath.startsWith('/doctor')
+        ? 'Portail médecin'
+        : t('auth.loginTitle');
 
   const [form, setForm] = useState({ identifier: '', password: '' });
 
@@ -23,8 +45,8 @@ export default function LoginPage() {
       const { user, accessToken, refreshToken } = res.data;
       setAuth({ user, accessToken, refreshToken });
       toast.success(t('auth.loginSuccess'));
-      const from = location.state?.from?.pathname;
-      const dest = from || (user.role === 'patient' ? '/portal' : '/admin');
+      const from = location.state?.from?.pathname || '';
+      const dest = canAccessPath(user.role, from) ? from : roleHome(user.role);
       navigate(dest, { replace: true });
     },
     onError: (err) => toast.error(err.message || t('common.error')),
@@ -74,7 +96,7 @@ export default function LoginPage() {
             <LogIn className="h-3.5 w-3.5" /> {t('common.login')}
           </div>
 
-          <h1 className="text-3xl font-black">{t('auth.loginTitle')}</h1>
+          <h1 className="text-3xl font-black">{loginTitle}</h1>
           <p className="mt-1 text-sm text-ink-500">{t('auth.loginSubtitle')}</p>
 
           <form onSubmit={onSubmit} className="mt-6 space-y-4">

@@ -12,10 +12,12 @@ router.use(
 );
 
 router.get('/dashboard', c.getDashboard);
+router.get('/appointments/calendar', c.getCalendar);
 router.get('/appointments', c.listAppointments);
+router.patch('/appointments/:id/status', c.updateAppointmentStatus);
 router.get('/patients', c.listPatients);
 router.get('/patients/:id', c.getPatientDetails);
-router.get('/appointments/calendar', c.getCalendar);
-router.patch('/appointments/:id/status', c.updateAppointmentStatus);
+router.get('/staff', c.listStaff);
+router.get('/reports/commissions', c.getCommissionsReport);
 
 module.exports = router;

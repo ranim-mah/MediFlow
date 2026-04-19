@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader2, ShieldAlert, Wallet, CalendarDays, UserRoundCog } from 'lucide-react';
 import { adminApi } from '@/lib/adminApi';
 import { formatDate, formatDateTime } from '@/lib/dates';
 
@@ -24,16 +24,36 @@ export default function AdminPatientsPage() {
   const summary = data?.summary || { highRiskCount: 0, chronicCount: 0 };
 
   const rows = useMemo(() => items, [items]);
+  const totalBalance = rows.reduce((acc, p) => acc + Number(p.outstandingBalance || 0), 0);
 
   return (
-    <section className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-black text-ink-900">إدارة المرضى</h1>
-        <p className="mt-1 text-ink-500">بحث ومتابعة ملفات المرضى داخل العيادة</p>
+    <section className="space-y-5">
+      <div className="rounded-2xl border border-brand-100 bg-white p-4 shadow-card md:p-5">
+        <h1 className="text-3xl font-black text-ink-900">المرضى</h1>
+        <p className="mt-1 text-sm text-ink-500">بحث + تصفية + إجراءات سريعة على ملفات المرضى</p>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="rounded-xl border border-ink-100 bg-ink-50 px-3 py-3">
+            <p className="text-xs text-ink-500">إجمالي المرضى</p>
+            <p className="mt-1 text-2xl font-black">{rows.length}</p>
+          </div>
+          <div className="rounded-xl border border-ink-100 bg-rose-50 px-3 py-3">
+            <p className="inline-flex items-center gap-1 text-xs text-rose-700"><ShieldAlert className="h-3.5 w-3.5" /> عالي الخطورة</p>
+            <p className="mt-1 text-2xl font-black text-rose-700">{summary.highRiskCount || 0}</p>
+          </div>
+          <div className="rounded-xl border border-ink-100 bg-amber-50 px-3 py-3">
+            <p className="text-xs text-amber-700">حالات مزمنة</p>
+            <p className="mt-1 text-2xl font-black text-amber-700">{summary.chronicCount || 0}</p>
+          </div>
+          <div className="rounded-xl border border-ink-100 bg-brand-50 px-3 py-3">
+            <p className="inline-flex items-center gap-1 text-xs text-brand-700"><Wallet className="h-3.5 w-3.5" /> إجمالي الرصيد</p>
+            <p className="mt-1 text-2xl font-black text-brand-700">{totalBalance.toFixed(2)} DT</p>
+          </div>
+        </div>
       </div>
 
-      <div className="card">
-        <div className="grid gap-3 md:grid-cols-3">
+      <div className="rounded-2xl border border-brand-100 bg-white p-4 shadow-card">
+        <div className="grid gap-3 md:grid-cols-4">
           <label className="relative md:col-span-2">
             <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
             <input
@@ -48,6 +68,10 @@ export default function AdminPatientsPage() {
             <option value="high">عالي الخطورة</option>
             <option value="chronic">مزمن</option>
           </select>
+
+          <button type="button" className="rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-sm font-bold text-brand-700">
+            <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-4 w-4" /> آخر الزيارات</span>
+          </button>
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2 text-sm text-ink-600">
@@ -57,41 +81,58 @@ export default function AdminPatientsPage() {
         </div>
       </div>
 
-      <div className="card overflow-x-auto">
+      <div className="overflow-x-auto rounded-2xl border border-brand-100 bg-white shadow-card">
         {isLoading ? (
           <div className="flex min-h-[240px] items-center justify-center">
             <Loader2 className="h-8 w-8 animate-spin text-brand-600" />
           </div>
         ) : rows.length === 0 ? (
-          <p className="text-ink-500">لا توجد نتائج مطابقة.</p>
+          <p className="p-5 text-ink-500">لا توجد نتائج مطابقة.</p>
         ) : (
           <table className="min-w-full text-sm">
-            <thead>
+            <thead className="bg-[#f5f8ff]">
               <tr className="border-b border-ink-100 text-ink-500">
-                <th className="px-3 py-2 text-start">الكود</th>
+                <th className="px-3 py-3 text-start">#</th>
+                <th className="px-3 py-3 text-start">الكود</th>
                 <th className="px-3 py-2 text-start">الاسم</th>
                 <th className="px-3 py-2 text-start">الهاتف</th>
-                <th className="px-3 py-2 text-start">الفرع</th>
+                <th className="px-3 py-2 text-start">آخر زيارة</th>
+                <th className="px-3 py-2 text-start">المؤشرات</th>
                 <th className="px-3 py-2 text-start">آخر زيارة</th>
                 <th className="px-3 py-2 text-start">الرصيد</th>
+                <th className="px-3 py-2 text-start">إجراءات</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((p) => (
+              {rows.map((p, idx) => (
                 <tr
                   key={p._id}
                   className="cursor-pointer border-b border-ink-50 hover:bg-ink-50/60"
                   onClick={() => setSelectedPatientId(p._id)}
                 >
+                  <td className="px-3 py-2 text-ink-500">{idx + 1}</td>
                   <td className="px-3 py-2 font-semibold">{p.patientCode}</td>
                   <td className="px-3 py-2">
                     <div className="font-semibold text-ink-900">{p.fullName}</div>
                     <div className="text-xs text-ink-500">{p.email || '—'}</div>
                   </td>
                   <td className="px-3 py-2" dir="ltr">{p.phone}</td>
-                  <td className="px-3 py-2">{p.branchId?.name || '—'}</td>
+                  <td className="px-3 py-2">{formatDate(p.lastVisitAt, 'ar')}</td>
+                  <td className="px-3 py-2">
+                    <div className="flex flex-wrap gap-1">
+                      {p.isHighRisk ? <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[11px] font-bold text-rose-700">حرج</span> : null}
+                      {p.isChronic ? <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-700">مزمن</span> : null}
+                      {!p.isHighRisk && !p.isChronic ? <span className="rounded-full bg-ink-100 px-2 py-0.5 text-[11px] font-bold text-ink-600">مستقر</span> : null}
+                    </div>
+                  </td>
                   <td className="px-3 py-2">{formatDate(p.lastVisitAt, 'ar')}</td>
                   <td className="px-3 py-2 font-bold">{p.outstandingBalance || 0} DT</td>
+                  <td className="px-3 py-2">
+                    <div className="flex flex-wrap gap-1">
+                      <button type="button" className="rounded-full border border-brand-300 px-2 py-0.5 text-[11px] font-bold text-brand-700">الملف</button>
+                      <button type="button" className="rounded-full border border-ink-300 px-2 py-0.5 text-[11px] font-bold text-ink-700">تعديل</button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -105,7 +146,7 @@ export default function AdminPatientsPage() {
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-black text-ink-900">تفاصيل ملف المريض</h2>
-                <p className="mt-1 text-sm text-ink-500">عرض الموعدات والزيارات والوصفات والتحاليل</p>
+                <p className="mt-1 text-sm text-ink-500">عرض المواعيد والزيارات والوصفات والتحاليل</p>
               </div>
               <button className="rounded-lg border border-ink-200 px-3 py-1.5 text-sm" onClick={() => setSelectedPatientId(null)}>
                 إغلاق

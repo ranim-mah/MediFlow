@@ -29,6 +29,16 @@ const userSchema = new mongoose.Schema(
     // Multi-tenant (future-proof for multiple clinics)
     branchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch', default: null },
 
+    // Mobile push notification tokens (Expo push tokens)
+    pushTokens: [
+      {
+        token: { type: String, required: true },
+        platform: { type: String, default: 'unknown' },
+        lastSeenAt: { type: Date, default: Date.now },
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
+
     // Refresh tokens (for multi-device support)
     refreshTokens: [{ token: String, createdAt: { type: Date, default: Date.now } }],
 
@@ -55,6 +65,7 @@ userSchema.methods.comparePassword = async function (candidate) {
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;
+  delete obj.pushTokens;
   delete obj.refreshTokens;
   delete obj.__v;
   return obj;

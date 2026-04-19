@@ -39,4 +39,19 @@ export const adminApi = {
   },
   updateAppointmentStatus: ({ id, status, reason }) =>
     api.patch(`/admin/appointments/${id}/status`, { status, reason }),
+  listStaff: ({ q = '', role = '', page = 1, limit = 20 } = {}) => {
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (role) params.set('role', role);
+    params.set('page', String(page));
+    params.set('limit', String(limit));
+    return api.get(`/admin/staff?${params.toString()}`);
+  },
+  getCommissionsReport: ({ from = '', to = '', doctorId = '' } = {}) => {
+    const params = new URLSearchParams();
+    if (from) params.set('from', from);
+    if (to) params.set('to', to);
+    if (doctorId) params.set('doctorId', doctorId);
+    return api.get(`/admin/reports/commissions?${params.toString()}`);
+  },
 };

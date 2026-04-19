@@ -56,7 +56,7 @@ export default function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
           <LanguageSwitcher variant={scrolled ? 'dark' : 'light'} />
           <Link
-            to="/admin"
+            to="/login?role=admin"
             className={cn(
               'btn gap-2 px-4 py-2 text-sm',
               scrolled
@@ -101,6 +101,9 @@ export default function Navbar() {
             <div className="mt-3 flex items-center justify-between gap-2">
               <LanguageSwitcher variant="dark" />
             </div>
+            <Link to="/login?role=admin" className="btn mt-3 w-full" onClick={() => setOpen(false)}>
+              {t('nav.adminPortal')}
+            </Link>
             <Link to="/portal" className="btn-primary mt-3 w-full" onClick={() => setOpen(false)}>
               {t('nav.patientPortal')}
             </Link>

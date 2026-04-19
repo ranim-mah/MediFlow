@@ -5,6 +5,7 @@ const Patient = require('../models/Patient');
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt');
 const { asyncHandler, ApiError } = require('../utils/asyncHandler');
 const { ROLES } = require('../utils/constants');
+const { createNotificationAndPush } = require('../services/notificationService');
 
 /**
  * Helper: build token pair and persist refresh token on the user.
@@ -154,4 +155,74 @@ exports.me = asyncHandler(async (req, res) => {
   // Doctor / Staff profiles can be added later with populate
 
   res.json({ success: true, data: { user, profile } });
+});
+
+/**
+ * POST /api/auth/device-token
+ * Register or refresh a mobile push token for the authenticated user.
+ */
+exports.registerDeviceToken = asyncHandler(async (req, res) => {
+  const { token, platform } = req.body || {};
+
+  if (!token || typeof token !== 'string') {
+    throw new ApiError(400, 'Token push requis');
+  }
+
+  const cleanedToken = token.trim();
+  if (!cleanedToken) {
+    throw new ApiError(400, 'Token push requis');
+  }
+
+  req.user.pushTokens = Array.isArray(req.user.pushTokens) ? req.user.pushTokens : [];
+
+  const existing = req.user.pushTokens.find((entry) => entry.token === cleanedToken);
+  if (existing) {
+    existing.platform = platform || existing.platform || 'unknown';
+    existing.lastSeenAt = new Date();
+  } else {
+    req.user.pushTokens.push({
+      token: cleanedToken,
+      platform: platform || 'unknown',
+      lastSeenAt: new Date(),
+      createdAt: new Date(),
+    });
+  }
+
+  await req.user.save();
+
+  res.json({
+    success: true,
+    message: 'Token push enregistre',
+    data: {
+      token: cleanedToken,
+      platform: platform || 'unknown',
+    },
+  });
+});
+
+/**
+ * POST /api/auth/push-test
+ * Sends a test push to the authenticated user.
+ */
+exports.sendTestPush = asyncHandler(async (req, res) => {
+  const { title, body } = req.body || {};
+
+  const result = await createNotificationAndPush({
+    userId: req.user._id,
+    type: 'system',
+    title: String(title || 'Test notification Mediflow'),
+    body: String(body || 'Ceci est un test push depuis Mediflow.'),
+    link: '/patient/notifications',
+    priority: 'normal',
+    channels: ['in_app', 'push'],
+  });
+
+  res.json({
+    success: true,
+    message: 'Test push envoye',
+    data: {
+      notificationId: result.notification?._id,
+      pushResult: result.pushResult,
+    },
+  });
 });

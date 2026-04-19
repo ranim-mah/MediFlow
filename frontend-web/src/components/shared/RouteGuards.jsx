@@ -1,6 +1,12 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 
+const roleHome = (role) => {
+  if (role === 'patient') return '/portal';
+  if (role === 'doctor') return '/doctor';
+  return '/admin';
+};
+
 export function ProtectedRoute({ children, roles }) {
   const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
@@ -24,7 +30,7 @@ export function PublicOnlyRoute({ children }) {
 
   // If auth is inconsistent (no role), allow login/register to render.
   if (isAuthenticated && user?.role) {
-    const dest = user.role === 'patient' ? '/portal' : '/admin';
+    const dest = roleHome(user.role);
     return <Navigate to={dest} replace />;
   }
   return children || <Outlet />;

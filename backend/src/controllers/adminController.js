@@ -10,9 +10,11 @@ const {
   Doctor,
   Staff,
   Branch,
+  User,
 } = require('../models');
 const { asyncHandler, ApiError } = require('../utils/asyncHandler');
 const { APPOINTMENT_STATUS } = require('../utils/constants');
+const { notifyAppointmentPatient } = require('../services/notificationService');
 
 const startOfDay = (d = new Date()) => {
   const x = new Date(d);
@@ -326,6 +328,107 @@ exports.listAppointments = asyncHandler(async (req, res) => {
 });
 
 /**
+ * GET /api/admin/staff
+ * Query: q, role, page, limit
+ */
+exports.listStaff = asyncHandler(async (req, res) => {
+  const q = String(req.query.q || '').trim();
+  const role = String(req.query.role || '').trim();
+  const page = Math.max(parseInt(req.query.page || '1', 10), 1);
+  const limit = Math.min(Math.max(parseInt(req.query.limit || '20', 10), 1), 100);
+  const skip = (page - 1) * limit;
+
+  const userFilter = { role: { $in: ['admin', 'doctor', 'reception', 'assistant', 'nurse'] } };
+  if (role) userFilter.role = role;
+  if (q) {
+    userFilter.$or = [
+      { fullName: { $regex: q, $options: 'i' } },
+      { email: { $regex: q, $options: 'i' } },
+      { phone: { $regex: q, $options: 'i' } },
+    ];
+  }
+
+  const [users, total] = await Promise.all([
+    User.find(userFilter)
+      .sort({ role: 1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .select('fullName email phone role isActive createdAt branchId'),
+    User.countDocuments(userFilter),
+  ]);
+
+  // Attach doctor info (specialty, commission) for doctor role
+  const doctorUserIds = users.filter((u) => u.role === 'doctor').map((u) => u._id);
+  const doctorRecords = await Doctor.find({ userId: { $in: doctorUserIds } })
+    .select('userId specialty commissionType commissionValue isActive');
+  const doctorMap = Object.fromEntries(doctorRecords.map((d) => [String(d.userId), d]));
+
+  const items = users.map((u) => ({
+    ...u.toObject(),
+    doctorInfo: doctorMap[String(u._id)] || null,
+  }));
+
+  res.json({
+    success: true,
+    data: {
+      items,
+      pagination: { page, limit, total, totalPages: Math.max(Math.ceil(total / limit), 1) },
+    },
+  });
+});
+
+/**
+ * GET /api/admin/reports/commissions
+ * Query: from, to, doctorId
+ */
+exports.getCommissionsReport = asyncHandler(async (req, res) => {
+  const now = new Date();
+  const from = req.query.from ? new Date(req.query.from) : new Date(now.getFullYear(), now.getMonth(), 1);
+  const to = req.query.to ? new Date(req.query.to) : new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+  const filter = { scheduledAt: { $gte: from, $lte: to }, status: 'completed' };
+  if (req.query.doctorId) filter.doctorId = req.query.doctorId;
+
+  const doctors = await Doctor.find({}).populate('userId', 'fullName email');
+
+  const rows = await Promise.all(
+    doctors.map(async (doc) => {
+      const appts = await Appointment.find({ ...filter, doctorId: doc._id })
+        .populate('serviceId', 'price currency');
+
+      const totalBilled = appts.reduce((sum, a) => sum + (a.serviceId?.price || 0), 0);
+      const commissionBase = doc.commissionType === 'percent'
+        ? totalBilled * (doc.commissionValue / 100)
+        : doc.commissionValue * appts.length;
+
+      return {
+        doctorId: doc._id,
+        doctorName: doc.userId?.fullName || '—',
+        specialty: doc.specialty || '—',
+        appointmentCount: appts.length,
+        totalBilled,
+        commissionType: doc.commissionType,
+        commissionValue: doc.commissionValue,
+        commissionEarned: Math.round(commissionBase * 100) / 100,
+        currency: 'DT',
+      };
+    })
+  );
+
+  res.json({
+    success: true,
+    data: {
+      range: { from, to },
+      rows: rows.filter((r) => r.appointmentCount > 0 || !req.query.doctorId),
+      totals: {
+        totalBilled: rows.reduce((s, r) => s + r.totalBilled, 0),
+        totalCommission: rows.reduce((s, r) => s + r.commissionEarned, 0),
+      },
+    },
+  });
+});
+
+/**
  * PATCH /api/admin/appointments/:id/status
  * Body: { status, reason? }
  */
@@ -367,6 +470,15 @@ exports.updateAppointmentStatus = asyncHandler(async (req, res) => {
   }
 
   await appointment.save();
+
+  await notifyAppointmentPatient(appointment._id, {
+    type: status === APPOINTMENT_STATUS.CANCELLED ? 'appointment_cancelled' : 'appointment_modified',
+    title:
+      status === APPOINTMENT_STATUS.CANCELLED ? 'Rendez-vous annule' : 'Statut du rendez-vous mis a jour',
+    body: `Votre rendez-vous est passe au statut ${status}.`,
+    link: '/patient/appointments',
+    priority: status === APPOINTMENT_STATUS.CANCELLED ? 'urgent' : 'normal',
+  });
 
   const updated = await Appointment.findById(appointment._id)
     .populate('patientId', 'fullName patientCode phone')

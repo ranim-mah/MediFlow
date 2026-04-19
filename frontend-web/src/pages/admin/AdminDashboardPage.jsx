@@ -1,5 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Users, UserCog, UserRoundCheck, CalendarClock, Loader2 } from 'lucide-react';
+import {
+  Users,
+  UserCog,
+  UserRoundCheck,
+  CalendarClock,
+  Loader2,
+  Search,
+  Wallet,
+  FileBarChart2,
+  PlusCircle,
+  Receipt,
+  UserPlus,
+  CalendarPlus,
+  Star,
+  Activity,
+} from 'lucide-react';
 import { adminApi } from '@/lib/adminApi';
 import { formatDateTime } from '@/lib/dates';
 
@@ -15,13 +30,27 @@ const statusLabel = {
 
 function StatCard({ label, value, icon: Icon }) {
   return (
-    <div className="card">
-      <div className="mb-2 flex items-center justify-between">
-        <span className="text-sm text-ink-500">{label}</span>
-        <Icon className="h-5 w-5 text-brand-700" />
+    <div className="rounded-2xl border border-brand-100 bg-white p-4 shadow-card">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <span className="text-sm font-semibold text-ink-500">{label}</span>
+        <span className="rounded-lg bg-brand-50 p-2">
+          <Icon className="h-4 w-4 text-brand-700" />
+        </span>
       </div>
-      <p className="text-2xl font-black text-ink-900">{value}</p>
+      <p className="text-3xl font-black leading-none text-ink-900">{value}</p>
     </div>
+  );
+}
+
+function QuickAction({ icon: Icon, label }) {
+  return (
+    <button
+      type="button"
+      className="flex items-center justify-center gap-2 rounded-2xl border border-brand-100 bg-white px-4 py-5 text-sm font-bold text-ink-800 transition-colors hover:bg-brand-50"
+    >
+      <Icon className="h-4 w-4 text-brand-700" />
+      {label}
+    </button>
   );
 }
 
@@ -52,28 +81,73 @@ export default function AdminDashboardPage() {
   const upcoming = data?.upcomingAppointments || [];
 
   return (
-    <section className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-black text-ink-900">لوحة تحكم الإدارة</h1>
-        <p className="mt-1 text-ink-500">نظرة سريعة على حالة العيادة اليوم</p>
+    <section className="space-y-5">
+      <div className="rounded-2xl border border-brand-100 bg-white p-4 shadow-card md:p-5">
+        <div className="grid gap-4 xl:grid-cols-[1.2fr_1fr]">
+          <div>
+            <p className="text-xs font-bold text-ink-500">صباح الخير</p>
+            <h1 className="mt-1 text-3xl font-black text-ink-900">أهلا بك أستاذ Mediflow</h1>
+            <p className="mt-1 text-sm text-ink-500">نظرة سريعة على التشغيل اليومي، الأداء والتحصيل داخل العيادة</p>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              <div className="rounded-xl border border-ink-100 bg-ink-50 px-3 py-2">
+                <p className="text-xs text-ink-500">مرضي جدد اليوم</p>
+                <p className="text-xl font-black text-ink-900">{k.totalPatients || 0}</p>
+              </div>
+              <div className="rounded-xl border border-ink-100 bg-ink-50 px-3 py-2">
+                <p className="text-xs text-ink-500">فواتير</p>
+                <p className="text-xl font-black text-ink-900">{k.monthlyInvoiced || 0}</p>
+              </div>
+              <div className="rounded-xl border border-ink-100 bg-ink-50 px-3 py-2">
+                <p className="text-xs text-ink-500">صافي اليوم</p>
+                <p className="text-xl font-black text-ink-900">{k.monthlyRevenue || 0}.00</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-brand-100 bg-gradient-to-br from-white to-brand-50 p-4">
+            <p className="text-sm font-bold text-ink-700">بحث سريع داخل النظام</p>
+            <div className="mt-3 flex items-center gap-2 rounded-xl border border-ink-200 bg-white px-3 py-2">
+              <Search className="h-4 w-4 text-ink-400" />
+              <input className="w-full bg-transparent text-sm outline-none" placeholder="مريض، موبايل، فاتورة، موعد..." />
+            </div>
+            <p className="mt-2 text-xs text-ink-500">ابحث عن أي رقم ملف أو اسم أو موبايل للوصول السريع.</p>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <button type="button" className="rounded-lg bg-[#1f62d8] px-3 py-2 text-xs font-bold text-white">المواعيد</button>
+              <button type="button" className="rounded-lg border border-brand-200 bg-white px-3 py-2 text-xs font-bold text-ink-700">المرضى</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="إجمالي المرضى" value={k.totalPatients || 0} icon={Users} />
         <StatCard label="الأطباء" value={k.totalDoctors || 0} icon={UserRoundCheck} />
         <StatCard label="الموظفون" value={k.totalStaff || 0} icon={UserCog} />
         <StatCard label="مواعيد اليوم" value={k.appointmentsToday || 0} icon={CalendarClock} />
       </div>
 
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+        <QuickAction icon={Wallet} label="المدفوعات" />
+        <QuickAction icon={FileBarChart2} label="التقارير" />
+        <QuickAction icon={PlusCircle} label="إضافة عملية" />
+        <QuickAction icon={Receipt} label="فاتورة جديدة" />
+        <QuickAction icon={UserPlus} label="مريض جديد" />
+        <QuickAction icon={CalendarPlus} label="إضافة موعد" />
+      </div>
+
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="card lg:col-span-2">
-          <h2 className="mb-4 text-xl font-black">المواعيد القادمة</h2>
+        <div className="rounded-2xl border border-brand-100 bg-white p-5 shadow-card lg:col-span-2">
+          <div className="mb-4 flex items-center justify-between gap-2">
+            <h2 className="text-xl font-black">المواعيد القادمة</h2>
+            <button type="button" className="rounded-lg border border-brand-200 px-2.5 py-1 text-xs font-bold text-brand-700">عرض الكل</button>
+          </div>
           {upcoming.length === 0 ? (
             <p className="text-ink-500">لا توجد مواعيد قادمة حاليا.</p>
           ) : (
             <div className="space-y-3">
               {upcoming.map((a) => (
-                <div key={a._id} className="rounded-xl border border-ink-100 p-3">
+                <div key={a._id} className="rounded-xl border border-ink-100 bg-ink-50/70 p-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="font-bold text-ink-900">{a.patientId?.fullName || '—'}</p>
                     <span className="text-sm text-ink-500">{formatDateTime(a.scheduledAt, 'ar')}</span>
@@ -83,7 +157,7 @@ export default function AdminDashboardPage() {
                     {' · '}
                     {a.doctor || 'بدون طبيب'}
                     {' · '}
-                    {a.branch?.name || '—'}
+                    {a.branchId?.name || '—'}
                     {' · '}
                     <span className="font-semibold">{statusLabel[a.status] || a.status}</span>
                   </p>
@@ -130,22 +204,46 @@ export default function AdminDashboardPage() {
           )}
         </div>
 
-        <div className="card">
-          <h2 className="mb-4 text-xl font-black">ملخص مالي (شهري)</h2>
-          <div className="space-y-3 text-sm">
-            <div className="flex items-center justify-between rounded-lg bg-brand-50 px-3 py-2">
-              <span>المحصل</span>
-              <strong>{k.monthlyRevenue || 0} DT</strong>
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-brand-100 bg-white p-5 shadow-card">
+            <h2 className="mb-4 text-xl font-black">ملخص مالي (شهري)</h2>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center justify-between rounded-lg bg-brand-50 px-3 py-2">
+                <span>المحصل</span>
+                <strong>{k.monthlyRevenue || 0} DT</strong>
+              </div>
+              <div className="flex items-center justify-between rounded-lg bg-ink-100 px-3 py-2">
+                <span>المفوتر</span>
+                <strong>{k.monthlyInvoiced || 0} DT</strong>
+              </div>
+              <div className="flex items-center justify-between rounded-lg bg-amber-50 px-3 py-2">
+                <span>المتبقي</span>
+                <strong>{k.monthlyBalance || 0} DT</strong>
+              </div>
+              <div className="mt-2 text-ink-500">حالة الدور النشط: {k.activeQueueToday || 0}</div>
             </div>
-            <div className="flex items-center justify-between rounded-lg bg-ink-100 px-3 py-2">
-              <span>المفوتر</span>
-              <strong>{k.monthlyInvoiced || 0} DT</strong>
+          </div>
+
+          <div className="rounded-2xl border border-brand-100 bg-white p-5 shadow-card">
+            <div className="mb-3 flex items-center gap-2">
+              <Activity className="h-4 w-4 text-brand-700" />
+              <h2 className="text-lg font-black">مؤشر الأداء الشهري</h2>
             </div>
-            <div className="flex items-center justify-between rounded-lg bg-amber-50 px-3 py-2">
-              <span>المتبقي</span>
-              <strong>{k.monthlyBalance || 0} DT</strong>
+            <div className="space-y-2 text-xs">
+              <div className="h-2.5 rounded-full bg-ink-100">
+                <div className="h-2.5 w-[78%] rounded-full bg-[#49a5ff]" />
+              </div>
+              <div className="h-2.5 rounded-full bg-ink-100">
+                <div className="h-2.5 w-[42%] rounded-full bg-[#f5b04c]" />
+              </div>
+              <div className="h-2.5 rounded-full bg-ink-100">
+                <div className="h-2.5 w-[22%] rounded-full bg-[#fc7d7d]" />
+              </div>
             </div>
-            <div className="mt-2 text-ink-500">حالة الدور النشط: {k.activeQueueToday || 0}</div>
+            <div className="mt-4 flex items-center gap-2 text-xs text-ink-500">
+              <Star className="h-3.5 w-3.5" />
+              عرض مبسط محاكي للشكل المرجعي.
+            </div>
           </div>
         </div>
       </div>

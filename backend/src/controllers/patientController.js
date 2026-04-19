@@ -5,6 +5,7 @@ const {
 } = require('../models');
 const { asyncHandler, ApiError } = require('../utils/asyncHandler');
 const { APPOINTMENT_STATUS } = require('../utils/constants');
+const { notifyAppointmentPatient } = require('../services/notificationService');
 
 /**
  * Helper: resolve the Patient document linked to the authenticated user.
@@ -137,6 +138,14 @@ exports.createAppointment = asyncHandler(async (req, res) => {
     createdBy: req.user._id,
   });
 
+  await notifyAppointmentPatient(appointment._id, {
+    type: 'appointment_created',
+    title: 'Rendez-vous demande',
+    body: `Votre rendez-vous du ${new Date(appointment.scheduledAt).toLocaleString()} a ete cree et attend confirmation.`,
+    link: '/patient/appointments',
+    priority: 'normal',
+  });
+
   res.status(201).json({ success: true, data: appointment });
 });
 
@@ -163,6 +172,14 @@ exports.cancelAppointment = asyncHandler(async (req, res) => {
   appointment.cancelledBy = req.user._id;
   appointment.cancelReason = req.body?.reason || 'Annulé par le patient';
   await appointment.save();
+
+  await notifyAppointmentPatient(appointment._id, {
+    type: 'appointment_cancelled',
+    title: 'Rendez-vous annule',
+    body: `Votre rendez-vous du ${new Date(appointment.scheduledAt).toLocaleString()} a ete annule.`,
+    link: '/patient/appointments',
+    priority: 'high',
+  });
 
   res.json({ success: true, data: appointment });
 });

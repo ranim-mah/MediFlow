@@ -14,6 +14,10 @@ export const LANGUAGES = [
 
 export const getDir = (lang) => LANGUAGES.find((l) => l.code === lang)?.dir || 'ltr';
 
+if (!localStorage.getItem('mediflow.lang')) {
+  localStorage.setItem('mediflow.lang', 'ar');
+}
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
