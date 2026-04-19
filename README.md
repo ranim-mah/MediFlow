@@ -59,17 +59,17 @@ MediFlow/
 
 ## Aperçu en images
 
-| Portail patient (services)         | Tableau de bord admin                     | Portail patient (accueil)              |
-| ---------------------------------- | ----------------------------------------- | -------------------------------------- |
-| ![Services](captures/capture1.png) | ![Admin Dashboard](captures/capture2.png) | ![Patient Home](captures/capture3.png) |
+| Portail patient (services)                                  | Tableau de bord admin                                              | Portail patient (accueil)                                       |
+| ----------------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------- |
+| ![Services](captures/Capture d'écran 2026-04-19 072510.png) | ![Admin Dashboard](captures/Capture d'écran 2026-04-19 072520.png) | ![Patient Home](captures/Capture d'écran 2026-04-19 072535.png) |
 
-| Dossier médical patient                | Calendrier admin                         | Gestion des rendez-vous                |
-| -------------------------------------- | ---------------------------------------- | -------------------------------------- |
-| ![Medical File](captures/capture4.png) | ![Admin Calendar](captures/capture5.png) | ![Appointments](captures/capture6.png) |
+| Dossier médical patient                                         | Calendrier admin                                                  | Gestion des rendez-vous                                         |
+| --------------------------------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------- |
+| ![Medical File](captures/Capture d'écran 2026-04-19 072555.png) | ![Admin Calendar](captures/Capture d'écran 2026-04-19 072605.png) | ![Appointments](captures/Capture d'écran 2026-04-19 072622.png) |
 
-| Statistiques & Finances           | Prise de rendez-vous                    | Portail patient (EN)                 |
-| --------------------------------- | --------------------------------------- | ------------------------------------ |
-| ![Finance](captures/capture7.png) | ![Quick Booking](captures/capture8.png) | ![Patient EN](captures/capture9.png) |
+| Statistiques & Finances                                    | Prise de rendez-vous                                             | Portail patient (EN)                                          |
+| ---------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------- |
+| ![Finance](captures/Capture d'écran 2026-04-19 072637.png) | ![Quick Booking](captures/Capture d'écran 2026-04-19 072647.png) | ![Patient EN](captures/Capture d'écran 2026-04-19 072656.png) |
 
 > D'autres captures sont disponibles dans le dossier `captures/`.
 
