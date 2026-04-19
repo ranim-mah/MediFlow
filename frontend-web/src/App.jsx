@@ -22,6 +22,12 @@ import NotificationsPage from '@/pages/portal/NotificationsPage';
 
 import { ProtectedRoute, PublicOnlyRoute } from '@/components/shared/RouteGuards';
 
+// Admin
+import AdminLayout from '@/layouts/AdminLayout';
+import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
+import AdminPatientsPage from '@/pages/admin/AdminPatientsPage';
+import AdminCalendarPage from '@/pages/admin/AdminCalendarPage';
+
 export default function App() {
   return (
     <Routes>
@@ -56,18 +62,19 @@ export default function App() {
         <Route path="notifications" element={<NotificationsPage />} />
       </Route>
 
-      {/* Admin placeholder (Phase 4) */}
+      {/* Admin clinic (Phase 4 iteration 1) */}
       <Route
-        path="/admin/*"
+        path="/admin"
         element={
-          <div className="min-h-screen flex items-center justify-center p-6 text-center">
-            <div>
-              <h1 className="text-2xl font-black">🚧 Admin portal — Phase 4</h1>
-              <p className="mt-2 text-ink-500">Coming next.</p>
-            </div>
-          </div>
+          <ProtectedRoute roles={['admin', 'reception', 'assistant', 'nurse', 'doctor']}>
+            <AdminLayout />
+          </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<AdminDashboardPage />} />
+        <Route path="patients" element={<AdminPatientsPage />} />
+        <Route path="calendar" element={<AdminCalendarPage />} />
+      </Route>
     </Routes>
   );
 }

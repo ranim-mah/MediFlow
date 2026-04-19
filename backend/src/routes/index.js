@@ -14,6 +14,7 @@ router.get('/health', (req, res) => {
 router.use('/auth', authRoutes);
 router.use('/public', require('./publicRoutes'));
 router.use('/patient', require('./patientRoutes'));
+router.use('/admin', require('./adminRoutes'));
 
 // Future routes:
 // router.use('/patients', require('./patientRoutes'));
