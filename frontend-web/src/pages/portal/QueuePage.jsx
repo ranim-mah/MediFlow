@@ -6,9 +6,9 @@ import { formatDateTime } from '@/lib/dates';
 import StatusBadge from '@/components/portal/StatusBadge';
 
 const BigNumber = ({ label, value, tone = 'white' }) => (
-  <div className={`rounded-2xl p-6 text-center ${tone === 'white' ? 'bg-white/15 backdrop-blur-sm' : 'bg-white text-ink-900'}`}>
-    <p className={`text-sm font-semibold ${tone === 'white' ? 'text-white/80' : 'text-ink-500'}`}>{label}</p>
-    <p className={`mt-2 text-5xl font-black ${tone === 'white' ? 'text-white' : 'text-ink-900'}`}>{value}</p>
+  <div className={`rounded-[24px] p-6 text-center ${tone === 'white' ? 'bg-white/14 backdrop-blur-sm' : 'border border-[#e7eef8] bg-white text-[#19233f]'}`}>
+    <p className={`text-sm font-semibold ${tone === 'white' ? 'text-white/80' : 'text-[#6d7ea6]'}`}>{label}</p>
+    <p className={`mt-2 text-5xl font-black tracking-tight ${tone === 'white' ? 'text-white' : 'text-[#19233f]'}`}>{value}</p>
   </div>
 );
 
@@ -24,11 +24,11 @@ export default function QueuePage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black md:text-3xl">
+          <h1 className="text-2xl font-black tracking-tight text-[#19233f] md:text-3xl">
             <Hash className="inline h-7 w-7 text-brand-700 me-2" />
             {t('portal.queue.title')}
           </h1>
-          <p className="mt-1 text-ink-500">{t('portal.queue.subtitle')}</p>
+          <p className="mt-1 text-[#6d7ea6]">{t('portal.queue.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -47,15 +47,15 @@ export default function QueuePage() {
           <Loader2 className="h-8 w-8 animate-spin text-brand-600" />
         </div>
       ) : !data?.hasEntry ? (
-        <div className="card text-center py-16">
-          <Clock className="mx-auto mb-4 h-12 w-12 text-ink-300" />
-          <h2 className="text-xl font-black">{t('portal.queue.noEntry')}</h2>
-          <p className="mt-2 text-ink-500">{t('portal.queue.noEntryDesc')}</p>
+        <div className="rounded-[28px] border border-[#e7eef8] bg-white py-16 text-center shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
+          <Clock className="mx-auto mb-4 h-12 w-12 text-[#c7d3ea]" />
+          <h2 className="text-xl font-black tracking-tight text-[#19233f]">{t('portal.queue.noEntry')}</h2>
+          <p className="mt-2 text-[#6d7ea6]">{t('portal.queue.noEntryDesc')}</p>
         </div>
       ) : (
         <>
           {/* Big queue panel (matches image 4) */}
-          <section className="rounded-3xl bg-gradient-to-br from-brand-700 to-brand-950 p-6 text-white shadow-xl md:p-8">
+          <section className="rounded-[32px] bg-gradient-to-br from-[#0d2f84] via-[#113f99] to-[#0a215f] p-6 text-white shadow-[0_18px_38px_rgba(15,23,42,0.18)] md:p-8">
             <div className="flex items-start justify-between">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold backdrop-blur-md ring-1 ring-white/20">
                 <Users className="h-3.5 w-3.5" />
@@ -65,7 +65,7 @@ export default function QueuePage() {
 
             <div className="mt-6 md:mt-8 md:flex md:items-start md:justify-between md:gap-8">
               <div className="flex-1">
-                <h2 className="text-2xl font-black md:text-3xl">
+                <h2 className="text-2xl font-black tracking-tight md:text-3xl">
                   {data.appointment?.serviceId?.name?.[i18n.language] || '—'}
                 </h2>
                 <p className="mt-2 text-sm text-white/80" dir="ltr">
@@ -76,7 +76,7 @@ export default function QueuePage() {
                   <StatusBadge status={data.status === 'waiting' ? 'pending' : data.status} />
                 </div>
 
-                <div className="mt-6 rounded-2xl bg-white/10 p-4 backdrop-blur-sm">
+                <div className="mt-6 rounded-[24px] bg-white/10 p-4 backdrop-blur-sm">
                   <h3 className="font-bold">{t('portal.queue.quickSummary')}</h3>
                   <p className="mt-1 text-sm text-white/80">{t('portal.queue.quickSummaryDesc')}</p>
                   {data.ahead === 0 && (
@@ -97,19 +97,19 @@ export default function QueuePage() {
 
           {/* Bottom info grid */}
           <div className="grid gap-4 lg:grid-cols-3">
-            <div className="card">
-              <h3 className="font-black text-ink-900">{t('portal.queue.completedToday')}</h3>
+            <div className="rounded-[28px] border border-[#e7eef8] bg-white p-6 shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
+              <h3 className="font-black tracking-tight text-[#19233f]">{t('portal.queue.completedToday')}</h3>
               <p className="mt-3 text-4xl font-black text-brand-700">{data.completedToday}</p>
-              <p className="mt-2 text-sm text-ink-500">{t('portal.queue.completedDesc')}</p>
+              <p className="mt-2 text-sm text-[#6d7ea6]">{t('portal.queue.completedDesc')}</p>
             </div>
-            <div className="card">
-              <h3 className="font-black text-ink-900">{t('portal.queue.currentStatus')}</h3>
-              <p className="mt-3 text-2xl font-black">{t(`statuses.${data.status === 'waiting' ? 'pending' : data.status}`, data.status)}</p>
-              <p className="mt-2 text-sm text-ink-500">{t('portal.queue.statusDesc')}</p>
+            <div className="rounded-[28px] border border-[#e7eef8] bg-white p-6 shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
+              <h3 className="font-black tracking-tight text-[#19233f]">{t('portal.queue.currentStatus')}</h3>
+              <p className="mt-3 text-2xl font-black tracking-tight text-[#19233f]">{t(`statuses.${data.status === 'waiting' ? 'pending' : data.status}`, data.status)}</p>
+              <p className="mt-2 text-sm text-[#6d7ea6]">{t('portal.queue.statusDesc')}</p>
             </div>
-            <div className="card border-l-4 border-amber-400">
-              <h3 className="font-black text-ink-900">{t('portal.queue.note')}</h3>
-              <p className="mt-2 text-sm text-ink-500">{t('portal.queue.noteDesc')}</p>
+            <div className="rounded-[28px] border border-[#e7eef8] bg-white p-6 shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
+              <h3 className="font-black tracking-tight text-[#19233f]">{t('portal.queue.note')}</h3>
+              <p className="mt-2 text-sm text-[#6d7ea6]">{t('portal.queue.noteDesc')}</p>
             </div>
           </div>
         </>

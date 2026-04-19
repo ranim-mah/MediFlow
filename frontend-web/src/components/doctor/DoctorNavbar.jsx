@@ -21,7 +21,7 @@ export default function DoctorNavbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-ink-950 text-white shadow-lg">
+    <header className="brand-topbar sticky top-0 z-40 text-white shadow-lg">
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:px-6">
         <Link to="/doctor" className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-md">

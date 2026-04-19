@@ -2,13 +2,13 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
 
 const STATUS_CLASSES = {
-  pending: 'bg-amber-100 text-amber-800',
-  confirmed: 'bg-blue-100 text-blue-800',
-  in_progress: 'bg-violet-100 text-violet-800',
-  completed: 'bg-emerald-100 text-emerald-800',
-  cancelled: 'bg-rose-100 text-rose-800',
-  no_show: 'bg-ink-100 text-ink-700',
-  waiting: 'bg-sky-100 text-sky-800',
+  pending: 'bg-[#fff3dd] text-[#b36d00]',
+  confirmed: 'bg-[#e9f1ff] text-[#245ccf]',
+  in_progress: 'bg-[#efe9ff] text-[#6b4fd6]',
+  completed: 'bg-[#e6f7ee] text-[#1d8a58]',
+  cancelled: 'bg-[#ffe8ea] text-[#c43f55]',
+  no_show: 'bg-[#edf1f7] text-[#5f6e86]',
+  waiting: 'bg-[#e6f4ff] text-[#1874c8]',
 };
 
 export default function StatusBadge({ status, className }) {

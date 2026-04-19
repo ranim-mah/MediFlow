@@ -51,15 +51,15 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="fixed inset-y-0 end-0 z-40 hidden w-[290px] overflow-y-auto border-s border-white/10 bg-[#0b2d64] text-white lg:block">
-      <div className="sticky top-0 border-b border-white/10 bg-[#0a2758]/95 px-5 py-4 backdrop-blur">
+    <aside className="brand-sidebar fixed inset-y-0 end-0 z-40 hidden w-[290px] overflow-y-auto border-s border-white/10 text-white lg:block">
+      <div className="sticky top-0 border-b border-white/10 bg-[#0a2a5f]/95 px-5 py-4 backdrop-blur">
         <p className="text-2xl font-black leading-none">عيادة ميدي فلو</p>
         <p className="mt-1 text-xs text-white/60">نظام إدارة العيادة - Admin</p>
       </div>
 
       <div className="space-y-5 px-4 py-4">
         <button
-          className="flex w-full items-center gap-2 rounded-xl bg-white/10 px-3 py-2.5 text-sm font-bold text-white hover:bg-white/15"
+          className="flex w-full items-center gap-2 rounded-xl bg-white/12 px-3 py-2.5 text-sm font-bold text-white hover:bg-white/18"
           type="button"
         >
           <Bell className="h-4 w-4" />
@@ -67,7 +67,7 @@ export default function AdminSidebar() {
         </button>
 
         {sections.map((section) => (
-          <div key={section.title} className="rounded-2xl border border-white/10 bg-white/5 p-2.5">
+          <div key={section.title} className="rounded-2xl border border-white/10 bg-white/6 p-2.5">
             <p className="px-2 pb-2 text-xs font-bold text-white/60">{section.title}</p>
             <div className="space-y-1">
               {section.links.map((l) => (
@@ -79,7 +79,7 @@ export default function AdminSidebar() {
                     cn(
                       'flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition-colors',
                       isActive
-                        ? 'bg-[#2f6bda] text-white shadow-lg'
+                        ? 'bg-[#2d6df0] text-white shadow-lg'
                         : 'text-white/80 hover:bg-white/10 hover:text-white'
                     )
                   }

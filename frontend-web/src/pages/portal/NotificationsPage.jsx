@@ -30,11 +30,11 @@ export default function NotificationsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black md:text-3xl">
+          <h1 className="text-2xl font-black tracking-tight text-[#19233f] md:text-3xl">
             <Bell className="inline h-7 w-7 text-brand-700 me-2" />
             {t('portal.nav.notifications')}
           </h1>
-          <p className="mt-1 text-ink-500">
+          <p className="mt-1 text-[#6d7ea6]">
             {unreadCount} {t('portal.dashboard.unreadNotifications')}
           </p>
         </div>
@@ -55,9 +55,9 @@ export default function NotificationsPage() {
           <Loader2 className="h-8 w-8 animate-spin text-brand-600" />
         </div>
       ) : notifications.length === 0 ? (
-        <div className="card text-center py-16">
-          <Bell className="mx-auto mb-4 h-12 w-12 text-ink-300" />
-          <p className="text-ink-500">{t('common.noData')}</p>
+        <div className="rounded-[28px] border border-[#e7eef8] bg-white py-16 text-center shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
+          <Bell className="mx-auto mb-4 h-12 w-12 text-[#c7d3ea]" />
+          <p className="text-[#6d7ea6]">{t('common.noData')}</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -66,20 +66,20 @@ export default function NotificationsPage() {
               key={n._id}
               onClick={() => !n.isRead && markOneMut.mutate(n._id)}
               className={cn(
-                'flex cursor-pointer gap-4 rounded-2xl p-4 shadow-card transition-colors',
-                n.isRead ? 'bg-white' : 'bg-brand-50 border border-brand-200'
+                'flex cursor-pointer gap-4 rounded-[24px] border p-4 shadow-[0_12px_28px_rgba(15,23,42,0.05)] transition-colors',
+                n.isRead ? 'border-[#e7eef8] bg-white' : 'border-[#dbe7ff] bg-[#f5f9ff]'
               )}
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-700">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#edf4ff] text-brand-700">
                 <Bell className="h-5 w-5" />
               </div>
               <div className="flex-1">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="font-bold text-ink-900">{n.title}</p>
-                  {!n.isRead && <span className="h-2 w-2 rounded-full bg-brand-600" />}
+                  <p className="font-bold tracking-tight text-[#19233f]">{n.title}</p>
+                  {!n.isRead && <span className="h-2 w-2 rounded-full bg-[#2d6df0]" />}
                 </div>
-                {n.body && <p className="mt-1 text-sm text-ink-600">{n.body}</p>}
-                <p className="mt-2 text-xs text-ink-400">{timeAgo(n.createdAt, i18n.language)}</p>
+                {n.body && <p className="mt-1 text-sm text-[#627395]">{n.body}</p>}
+                <p className="mt-2 text-xs text-[#8f9db8]">{timeAgo(n.createdAt, i18n.language)}</p>
               </div>
             </div>
           ))}

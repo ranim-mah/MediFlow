@@ -45,7 +45,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ink-50 to-brand-50">
+    <div className="app-shell">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 md:px-6">
         <Link to="/"><Logo variant="dark" /></Link>
         <LanguageSwitcher variant="dark" />

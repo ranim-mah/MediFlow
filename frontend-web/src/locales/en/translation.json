@@ -235,6 +235,21 @@
       "visits": "Visits",
       "noEvents": "No events to display",
       "viewDetails": "View details"
+    },
+    "account": {
+      "title": "My account",
+      "subtitle": "Your profile details and quick settings shortcuts.",
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "language": "Language",
+      "role": "Role",
+      "notifications": "Notifications",
+      "notificationsDesc": "View your latest alerts and mark them as read.",
+      "medicalFile": "Medical file",
+      "medicalFileDesc": "Review your records, prescriptions and reports.",
+      "backHome": "Back to dashboard",
+      "backHomeDesc": "Return to your main portal overview."
     }
   },
   "statuses": {

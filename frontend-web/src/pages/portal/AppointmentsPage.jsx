@@ -43,19 +43,19 @@ export default function AppointmentsPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black md:text-3xl">
+          <h1 className="text-2xl font-black tracking-tight text-[#19233f] md:text-3xl">
             <Calendar className="inline h-7 w-7 text-brand-700 me-2" />
             {t('portal.appointments.title')}
           </h1>
-          <p className="mt-1 text-ink-500">{t('portal.appointments.subtitle')}</p>
+          <p className="mt-1 text-[#6d7ea6]">{t('portal.appointments.subtitle')}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button className="btn bg-amber-400 text-amber-950 hover:bg-amber-300">
+          <Link to="/portal/appointments/requests" className="btn rounded-[18px] bg-amber-400 text-amber-950 hover:bg-amber-300">
             <ClipboardList className="h-4 w-4" /> {t('portal.appointments.modifyRequests')}
-          </button>
-          <button className="btn-outline">
+          </Link>
+          <Link to="/portal/appointments/calendar" className="btn-outline">
             <Calendar className="h-4 w-4" /> {t('portal.appointments.calendar')}
-          </button>
+          </Link>
           <Link to="/portal/appointments/new" className="btn-primary">
             <CalendarPlus className="h-4 w-4" /> {t('portal.appointments.new')}
           </Link>
@@ -63,13 +63,13 @@ export default function AppointmentsPage() {
       </div>
 
       {/* Scope tabs */}
-      <div className="inline-flex rounded-xl bg-white p-1 shadow-card">
+      <div className="inline-flex rounded-[22px] border border-[#e7eef8] bg-white p-1 shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
         {['all', 'upcoming', 'past'].map((s) => (
           <button
             key={s}
             onClick={() => setScope(s)}
-            className={`rounded-lg px-4 py-1.5 text-sm font-bold transition-colors ${
-              scope === s ? 'bg-brand-600 text-white' : 'text-ink-600 hover:text-ink-900'
+            className={`rounded-[18px] px-4 py-1.5 text-sm font-bold transition-colors ${
+              scope === s ? 'bg-[#2d6df0] text-white' : 'text-[#6d7ea6] hover:text-[#19233f]'
             }`}
           >
             {t(`portal.appointments.${s}`)}
@@ -79,8 +79,8 @@ export default function AppointmentsPage() {
 
       {/* Upcoming block */}
       {(scope === 'all' || scope === 'upcoming') && (
-        <section className="rounded-2xl bg-white p-6 shadow-card">
-          <h2 className="mb-4 text-lg font-black">{t('portal.appointments.upcoming')}</h2>
+        <section className="rounded-[28px] border border-[#e7eef8] bg-white p-6 shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
+          <h2 className="mb-4 text-lg font-black tracking-tight text-[#19233f]">{t('portal.appointments.upcoming')}</h2>
           {upcoming.length === 0 ? (
             <EmptyState text={t('portal.appointments.noAppointments')} />
           ) : (
@@ -101,8 +101,8 @@ export default function AppointmentsPage() {
 
       {/* Past block */}
       {(scope === 'all' || scope === 'past') && (
-        <section className="rounded-2xl bg-white p-6 shadow-card">
-          <h2 className="mb-4 text-lg font-black">{t('portal.appointments.past')}</h2>
+        <section className="rounded-[28px] border border-[#e7eef8] bg-white p-6 shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
+          <h2 className="mb-4 text-lg font-black tracking-tight text-[#19233f]">{t('portal.appointments.past')}</h2>
           {past.length === 0 ? (
             <EmptyState text={t('portal.appointments.noAppointments')} />
           ) : (
@@ -129,9 +129,9 @@ function AppointmentRow({ appointment, onCancel, readOnly, lang, t }) {
   const service = appointment.serviceId?.name?.[lang] || appointment.serviceId?.name?.ar;
 
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-ink-200 p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 rounded-[24px] border border-[#e7eef8] bg-[#fbfdff] p-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-start gap-4">
-        <div className="flex h-14 w-20 flex-col items-center justify-center rounded-xl bg-brand-50 text-brand-800">
+        <div className="flex h-14 w-20 flex-col items-center justify-center rounded-xl bg-[#eef4ff] text-[#245ccf]">
           <span className="text-xs font-semibold" dir="ltr">
             {new Date(appointment.scheduledAt).toLocaleDateString('en-GB')}
           </span>
@@ -140,8 +140,8 @@ function AppointmentRow({ appointment, onCancel, readOnly, lang, t }) {
           </span>
         </div>
         <div className="flex-1">
-          <h3 className="font-black text-ink-900">{service || '—'}</h3>
-          {doctor && <p className="text-sm text-ink-500">د / {doctor}</p>}
+          <h3 className="font-black tracking-tight text-[#19233f]">{service || '—'}</h3>
+          {doctor && <p className="text-sm text-[#6d7ea6]">د / {doctor}</p>}
           <div className="mt-2">
             <StatusBadge status={appointment.status} />
           </div>
@@ -150,12 +150,12 @@ function AppointmentRow({ appointment, onCancel, readOnly, lang, t }) {
 
       {!readOnly && (
         <div className="flex flex-wrap gap-2">
-          <button className="btn-ghost gap-1 px-3 py-1.5 text-xs">
+          <Link to={`/portal/appointments/${appointment._id}/modify`} className="btn-ghost gap-1 px-3 py-1.5 text-xs">
             <Pencil className="h-3.5 w-3.5" /> {t('portal.appointments.requestModify')}
-          </button>
+          </Link>
           <button
             onClick={() => onCancel(appointment._id)}
-            className="btn gap-1 border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 hover:bg-rose-100"
+            className="btn gap-1 border border-[#ffd7dd] bg-[#fff5f6] px-3 py-1.5 text-xs font-bold text-rose-700 hover:bg-[#ffe9ec]"
           >
             <CalendarX className="h-3.5 w-3.5" /> {t('portal.appointments.cancel')}
           </button>
@@ -167,7 +167,7 @@ function AppointmentRow({ appointment, onCancel, readOnly, lang, t }) {
 
 function EmptyState({ text }) {
   return (
-    <div className="rounded-xl bg-ink-50 p-6 text-center text-sm text-ink-500">
+    <div className="rounded-[22px] border border-[#e7eef8] bg-[#fbfdff] p-6 text-center text-sm text-[#6d7ea6]">
       {text}
     </div>
   );

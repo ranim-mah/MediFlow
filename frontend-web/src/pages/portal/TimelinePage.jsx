@@ -60,17 +60,17 @@ export default function TimelinePage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <section className="rounded-2xl bg-white p-6 shadow-card">
+      <section className="rounded-[28px] border border-[#e7eef8] bg-white p-6 shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-brand-100 px-3 py-1 text-xs font-bold text-brand-700">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#edf4ff] px-3 py-1 text-xs font-bold text-brand-700">
               <Layers className="h-3.5 w-3.5" /> {t('portal.timeline.badge')}
             </span>
-            <h1 className="mt-3 text-2xl font-black md:text-3xl">
+            <h1 className="mt-3 text-2xl font-black tracking-tight text-[#19233f] md:text-3xl">
               <ListOrdered className="inline h-7 w-7 text-brand-700 me-2" />
               {t('portal.timeline.title')}
             </h1>
-            <p className="mt-1 text-ink-500">{t('portal.timeline.subtitle')}</p>
+            <p className="mt-1 text-[#6d7ea6]">{t('portal.timeline.subtitle')}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link to="/portal/medical-file" className="btn-outline gap-2">
@@ -93,14 +93,14 @@ export default function TimelinePage() {
             onClick={() => setFilter(f.key)}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-colors ${
               filter === f.key
-                ? 'bg-brand-600 text-white shadow-md'
-                : 'bg-white text-ink-700 hover:bg-ink-100 shadow-card'
+                ? 'bg-[#2d6df0] text-white shadow-[0_10px_24px_rgba(45,109,240,0.25)]'
+                : 'border border-[#e7eef8] bg-white text-[#6d7ea6] hover:border-brand-300 hover:text-[#19233f]'
             }`}
           >
             <f.icon className="h-4 w-4" />
             {f.label}
             <span className={`rounded-full px-2 py-0.5 text-xs font-black ${
-              filter === f.key ? 'bg-white/20' : 'bg-ink-100 text-ink-700'
+              filter === f.key ? 'bg-white/20' : 'bg-[#edf4ff] text-[#4f6592]'
             }`}>
               {f.count ?? 0}
             </span>
@@ -114,15 +114,15 @@ export default function TimelinePage() {
           <Loader2 className="h-8 w-8 animate-spin text-brand-600" />
         </div>
       ) : events.length === 0 ? (
-        <div className="card text-center py-16">
-          <p className="text-ink-500">{t('portal.timeline.noEvents')}</p>
+        <div className="rounded-[28px] border border-[#e7eef8] bg-white py-16 text-center shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
+          <p className="text-[#6d7ea6]">{t('portal.timeline.noEvents')}</p>
         </div>
       ) : (
         <div className="space-y-8">
           {groups.map(([monthKey, items]) => (
             <div key={monthKey}>
               <div className="mb-4 flex justify-end">
-                <span className="inline-flex items-center rounded-full bg-ink-900 px-4 py-1.5 text-sm font-bold text-white">
+                <span className="inline-flex items-center rounded-full bg-[#19233f] px-4 py-1.5 text-sm font-bold text-white">
                   {new Date(monthKey + '-01').toLocaleDateString(i18n.language, {
                     month: 'long',
                     year: 'numeric',
@@ -131,7 +131,7 @@ export default function TimelinePage() {
               </div>
               <div className="space-y-3">
                 {items.map((evt, idx) => (
-                  <TimelineEvent key={`${evt.type}-${evt.id}-${idx}`} event={evt} lang={i18n.language} t={t} />
+                  <TimelineEvent key={`${evt.type}-${evt.id}-${idx}`} event={evt} eventKey={evt.id || evt._id || `${monthKey}-${idx}`} lang={i18n.language} t={t} />
                 ))}
               </div>
             </div>
@@ -142,7 +142,7 @@ export default function TimelinePage() {
   );
 }
 
-function TimelineEvent({ event, lang, t }) {
+function TimelineEvent({ event, eventKey, lang, t }) {
   const meta = TYPE_META[event.type] || { icon: Layers, color: 'bg-ink-100 text-ink-700' };
   const Icon = meta.icon;
 
@@ -154,26 +154,26 @@ function TimelineEvent({ event, lang, t }) {
         </div>
       </div>
 
-      <div className="flex-1 rounded-2xl bg-white p-4 shadow-card">
+      <div className="flex-1 rounded-[24px] border border-[#e7eef8] bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="badge bg-brand-100 text-brand-800">
+            <span className="badge bg-[#edf4ff] text-[#245ccf]">
               {t(`portal.timeline.${event.type === 'lab' ? 'labs' : event.type === 'radiology' ? 'radiology' : event.type + 's'}`, event.type)}
             </span>
             {event.status && <StatusBadge status={event.status === 'in_session' ? 'in_progress' : event.status} />}
           </div>
-          <time className="text-sm font-bold text-ink-600" dir="ltr">
+          <time className="text-sm font-bold text-[#6d7ea6]" dir="ltr">
             {formatDateTime(event.date, lang)}
           </time>
         </div>
 
-        <p className="mt-2 font-black text-ink-900">{event.title || '—'}</p>
-        {event.doctor && <p className="text-sm text-ink-500">د / {event.doctor}</p>}
+        <p className="mt-2 font-black tracking-tight text-[#19233f]">{event.title || '—'}</p>
+        {event.doctor && <p className="text-sm text-[#6d7ea6]">د / {event.doctor}</p>}
 
-        <button className="btn-ghost mt-3 gap-1 px-3 py-1 text-xs">
+        <Link to={`/portal/timeline/${eventKey}`} className="btn-ghost mt-3 gap-1 px-3 py-1 text-xs">
           <Eye className="h-3.5 w-3.5" />
           {t('portal.timeline.viewDetails')}
-        </button>
+        </Link>
       </div>
     </div>
   );

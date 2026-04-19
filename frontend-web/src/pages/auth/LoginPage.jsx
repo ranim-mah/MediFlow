@@ -12,7 +12,8 @@ import Logo from '@/components/ui/Logo';
 const roleHome = (role) => {
   if (role === 'patient') return '/portal';
   if (role === 'doctor') return '/doctor';
-  return '/admin';
+  if (role === 'admin' || role === 'reception' || role === 'assistant' || role === 'nurse') return '/admin';
+  return '/';
 };
 
 const canAccessPath = (role, path = '') => {
@@ -46,8 +47,15 @@ export default function LoginPage() {
       setAuth({ user, accessToken, refreshToken });
       toast.success(t('auth.loginSuccess'));
       const from = location.state?.from?.pathname || '';
-      const dest = canAccessPath(user.role, from) ? from : roleHome(user.role);
-      navigate(dest, { replace: true });
+      // Si on vient du bouton admin, forcer /admin
+      if (user.role === 'admin' || user.role === 'reception' || user.role === 'assistant' || user.role === 'nurse') {
+        navigate('/admin', { replace: true });
+      } else if (user.role === 'doctor') {
+        navigate('/doctor', { replace: true });
+      } else {
+        const dest = canAccessPath(user.role, from) ? from : roleHome(user.role);
+        navigate(dest, { replace: true });
+      }
     },
     onError: (err) => toast.error(err.message || t('common.error')),
   });
@@ -58,7 +66,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ink-50 to-brand-50">
+    <div className="app-shell">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 md:px-6">
         <Link to="/"><Logo variant="dark" /></Link>
         <div className="flex items-center gap-3">

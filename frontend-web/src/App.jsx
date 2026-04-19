@@ -14,11 +14,17 @@ const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'));
 const PortalLayout = lazy(() => import('@/layouts/PortalLayout'));
 const DashboardPage = lazy(() => import('@/pages/portal/DashboardPage'));
 const AppointmentsPage = lazy(() => import('@/pages/portal/AppointmentsPage'));
+const AppointmentsCalendarPage = lazy(() => import('@/pages/portal/AppointmentsCalendarPage'));
+const AppointmentRequestsPage = lazy(() => import('@/pages/portal/AppointmentRequestsPage'));
+const AppointmentModifyPage = lazy(() => import('@/pages/portal/AppointmentModifyPage'));
 const NewAppointmentPage = lazy(() => import('@/pages/portal/NewAppointmentPage'));
 const QueuePage = lazy(() => import('@/pages/portal/QueuePage'));
 const MedicalFilePage = lazy(() => import('@/pages/portal/MedicalFilePage'));
+const MedicalFilePrintPage = lazy(() => import('@/pages/portal/MedicalFilePrintPage'));
 const TimelinePage = lazy(() => import('@/pages/portal/TimelinePage'));
+const TimelineEventPage = lazy(() => import('@/pages/portal/TimelineEventPage'));
 const NotificationsPage = lazy(() => import('@/pages/portal/NotificationsPage'));
+const AccountPage = lazy(() => import('@/pages/portal/AccountPage'));
 
 const AdminLayout = lazy(() => import('@/layouts/AdminLayout'));
 const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage'));
@@ -74,11 +80,17 @@ export default function App() {
       >
         <Route index element={lazyElement(DashboardPage)} />
         <Route path="appointments" element={lazyElement(AppointmentsPage)} />
+        <Route path="appointments/calendar" element={lazyElement(AppointmentsCalendarPage)} />
+        <Route path="appointments/requests" element={lazyElement(AppointmentRequestsPage)} />
+        <Route path="appointments/:appointmentId/modify" element={lazyElement(AppointmentModifyPage)} />
         <Route path="appointments/new" element={lazyElement(NewAppointmentPage)} />
         <Route path="queue" element={lazyElement(QueuePage)} />
         <Route path="medical-file" element={lazyElement(MedicalFilePage)} />
+        <Route path="medical-file/print" element={lazyElement(MedicalFilePrintPage)} />
         <Route path="timeline" element={lazyElement(TimelinePage)} />
+        <Route path="timeline/:eventId" element={lazyElement(TimelineEventPage)} />
         <Route path="notifications" element={lazyElement(NotificationsPage)} />
+        <Route path="account" element={lazyElement(AccountPage)} />
       </Route>
 
       {/* Admin clinic (Phase 4 iteration 1) */}

@@ -31,8 +31,10 @@ export default function PortalNavbar() {
     { to: '/portal/notifications', label: t('portal.nav.notifications'), icon: Bell },
   ];
 
+  const portalBlueBar = 'brand-topbar';
+
   return (
-    <header className="sticky top-0 z-40 bg-ink-950 text-white shadow-lg">
+    <header className={`sticky top-0 z-40 text-white shadow-lg ${portalBlueBar}`}>
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:px-6">
         {/* Brand */}
         <Link to="/portal" className="flex items-center gap-3">
@@ -93,7 +95,7 @@ export default function PortalNavbar() {
       </div>
 
       {/* Mobile horizontal scroll nav */}
-      <nav className="flex gap-1 overflow-x-auto bg-ink-900 px-4 py-2 md:hidden">
+      <nav className={`flex gap-1 overflow-x-auto px-4 py-2 md:hidden ${portalBlueBar}`}>
         {links.map((l) => (
           <NavLink
             key={l.to}
@@ -114,7 +116,7 @@ export default function PortalNavbar() {
 
       {/* User strip (matches image 3's top bar) */}
       {user && (
-        <div className="bg-ink-900/80 backdrop-blur-md">
+        <div className={portalBlueBar}>
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5 text-xs md:px-6">
             <span className="text-white/70 truncate">{user.fullName}</span>
             <span className="text-white/50">{user.email || user.phone}</span>
