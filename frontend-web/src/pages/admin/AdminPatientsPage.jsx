@@ -155,6 +155,9 @@ export default function AdminPatientsPage() {
                           <div className="text-ink-600">{a.serviceId?.name?.ar || a.serviceId?.name?.fr || a.serviceId?.name?.en || 'خدمة'}</div>
                         </div>
                       ))}
+                      {(detailsData?.files?.appointments || []).length === 0 && (
+                        <p className="text-ink-500">لا توجد مواعيد مسجلة.</p>
+                      )}
                     </div>
                   </div>
 
@@ -167,6 +170,56 @@ export default function AdminPatientsPage() {
                           <div className="text-ink-600">{v.chiefComplaint || 'بدون شكوى مسجلة'}</div>
                         </div>
                       ))}
+                      {(detailsData?.files?.visits || []).length === 0 && (
+                        <p className="text-ink-500">لا توجد زيارات مسجلة.</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid gap-4 lg:grid-cols-3">
+                  <div className="rounded-xl border border-ink-100 p-4">
+                    <h3 className="mb-3 text-lg font-black">الوصفات</h3>
+                    <div className="space-y-2 text-sm">
+                      {(detailsData?.files?.prescriptions || []).slice(0, 6).map((p) => (
+                        <div key={p._id} className="rounded-lg bg-ink-50 px-3 py-2">
+                          <div className="font-semibold">{formatDateTime(p.issuedAt || p.createdAt, 'ar')}</div>
+                          <div className="text-ink-600">{p.notes || 'وصفة طبية'}</div>
+                        </div>
+                      ))}
+                      {(detailsData?.files?.prescriptions || []).length === 0 && (
+                        <p className="text-ink-500">لا توجد وصفات.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-ink-100 p-4">
+                    <h3 className="mb-3 text-lg font-black">التحاليل</h3>
+                    <div className="space-y-2 text-sm">
+                      {(detailsData?.files?.labs || []).slice(0, 6).map((l) => (
+                        <div key={l._id} className="rounded-lg bg-ink-50 px-3 py-2">
+                          <div className="font-semibold">{formatDateTime(l.requestedAt || l.createdAt, 'ar')}</div>
+                          <div className="text-ink-600">{l.testName || l.panelName || 'تحليل مخبري'}</div>
+                        </div>
+                      ))}
+                      {(detailsData?.files?.labs || []).length === 0 && (
+                        <p className="text-ink-500">لا توجد تحاليل.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-ink-100 p-4">
+                    <h3 className="mb-3 text-lg font-black">الأشعة</h3>
+                    <div className="space-y-2 text-sm">
+                      {(detailsData?.files?.radiology || []).slice(0, 6).map((r) => (
+                        <div key={r._id} className="rounded-lg bg-ink-50 px-3 py-2">
+                          <div className="font-semibold">{formatDateTime(r.requestedAt || r.createdAt, 'ar')}</div>
+                          <div className="text-ink-600">{r.testName || r.type || 'فحص أشعة'}</div>
+                        </div>
+                      ))}
+                      {(detailsData?.files?.radiology || []).length === 0 && (
+                        <p className="text-ink-500">لا توجد فحوصات أشعة.</p>
+                      )}
                     </div>
                   </div>
                 </div>

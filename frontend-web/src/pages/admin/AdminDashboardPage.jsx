@@ -109,6 +109,20 @@ export default function AdminDashboardPage() {
                     >
                       إلغاء
                     </button>
+                    <button
+                      onClick={() => statusMutation.mutate({ id: a._id, status: 'completed' })}
+                      disabled={statusMutation.isPending || a.status === 'completed'}
+                      className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      إنهاء
+                    </button>
+                    <button
+                      onClick={() => statusMutation.mutate({ id: a._id, status: 'no_show', reason: 'Patient absent' })}
+                      disabled={statusMutation.isPending || a.status === 'no_show'}
+                      className="rounded-lg bg-ink-700 px-3 py-1.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      لم يحضر
+                    </button>
                   </div>
                 </div>
               ))}

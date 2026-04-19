@@ -145,6 +145,20 @@ export default function AdminCalendarPage() {
                     >
                       إلغاء
                     </button>
+                    <button
+                      onClick={() => statusMutation.mutate({ id: e._id, status: 'completed' })}
+                      disabled={statusMutation.isPending || e.status === 'completed'}
+                      className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      إنهاء
+                    </button>
+                    <button
+                      onClick={() => statusMutation.mutate({ id: e._id, status: 'no_show', reason: 'Patient absent' })}
+                      disabled={statusMutation.isPending || e.status === 'no_show'}
+                      className="rounded-lg bg-ink-700 px-3 py-1.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      لم يحضر
+                    </button>
                   </div>
                 </div>
               ))}
