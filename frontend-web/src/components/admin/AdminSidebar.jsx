@@ -28,46 +28,46 @@ export default function AdminSidebar({ open, onClose }) {
         { to: '/admin/shortcuts', label: t('admin.sidebar.notificationsCenter'), icon: Megaphone },
       ],
     },
-    {
-      key: 'reception',
-      title: t('admin.sidebar.receptionPatients'),
-      count: 4,
-      collapsible: true,
-      items: [
-        { to: '/admin/patients', label: t('admin.sidebar.patients'), icon: UserRound },
-        { to: '/admin/duplicates', label: t('admin.sidebar.duplicates'), icon: Copy },
-        { to: '/admin/high-risk', label: t('admin.sidebar.highRiskPatients'), icon: AlertTriangle },
-        { to: '/admin/appointments', label: t('admin.sidebar.appointments'), icon: Calendar },
-      ],
-    },
-    {
-      key: 'staff',
-      title: t('admin.sidebar.staffManagement'),
-      count: 6,
-      collapsible: true,
-      items: [
-        { to: '/admin/staff', label: t('admin.sidebar.staffManagement'), icon: UsersRound },
-      ],
-    },
-    {
-      key: 'medical',
-      title: t('admin.sidebar.medicalManagement'),
-      count: 16,
-      collapsible: true,
-      items: [
-        { to: '/admin/medical', label: t('admin.sidebar.medicalManagement'), icon: Stethoscope },
-      ],
-    },
-    {
-      key: 'finance',
-      title: t('admin.sidebar.finance'),
-      count: 9,
-      collapsible: true,
-      items: [
-        { to: '/admin/accounting', label: t('admin.sidebar.accounting'), icon: BookOpen },
-      ],
-    },
-  ];
+          {
+            key: 'reception',
+            title: t('admin.sidebar.receptionPatients'),
+            count: 4,
+            collapsible: true,
+            items: [
+              { to: '/admin/patients', label: t('admin.sidebar.patients'), icon: UserRound },
+              { to: '/admin/duplicates', label: t('admin.sidebar.duplicates'), icon: Copy },
+              { to: '/admin/high-risk', label: t('admin.sidebar.highRiskPatients'), icon: AlertTriangle },
+              { to: '/admin/appointments', label: t('admin.sidebar.appointments'), icon: Calendar },
+            ],
+          },
+          {
+            key: 'staff',
+            title: t('admin.sidebar.staffManagement'),
+            count: 6,
+            collapsible: true,
+            items: [
+              { to: '/admin/staff', label: t('admin.sidebar.staffManagement'), icon: UsersRound },
+            ],
+          },
+          {
+            key: 'medical',
+            title: t('admin.sidebar.medicalManagement'),
+            count: 16,
+            collapsible: true,
+            items: [
+              { to: '/admin/medical', label: t('admin.sidebar.medicalManagement'), icon: Stethoscope },
+            ],
+          },
+          {
+            key: 'finance',
+            title: t('admin.sidebar.finance'),
+            count: 9,
+            collapsible: true,
+            items: [
+              { to: '/admin/accounting', label: t('admin.sidebar.accounting'), icon: BookOpen },
+            ],
+          },
+        ];
 
   return (
     <>
@@ -179,21 +179,6 @@ export default function AdminSidebar({ open, onClose }) {
     </>
   );
 }
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { NavLink } from 'react-router-dom';
-import {
-  Home, Bell, HelpCircle, Zap, Megaphone, Users, UserRound, Copy,
-  AlertTriangle, Calendar, UsersRound, Stethoscope, DollarSign, BookOpen,
-  ChevronDown, Star, Search,
-} from 'lucide-react';
-import { cn } from '@/lib/cn';
-
-export default function AdminSidebar({ open, onClose }) {
-  const { t } = useTranslation();
-  const [expanded, setExpanded] = useState({ reception: true, finance: false, staff: false, medical: false });
-
-  const toggle = (k) => setExpanded((e) => ({ ...e, [k]: !e[k] }));
 
   const topLinks = [
     { to: '/admin', label: t('admin.sidebar.dashboard'), icon: Home, end: true },
