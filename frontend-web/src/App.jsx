@@ -31,13 +31,7 @@ const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage')
 const AdminAppointmentsPage = lazy(() => import('@/pages/admin/AdminAppointmentsPage'));
 const AdminPatientsPage = lazy(() => import('@/pages/admin/AdminPatientsPage'));
 const AdminCalendarPage = lazy(() => import('@/pages/admin/AdminCalendarPage'));
-const AdminStaffPage = lazy(() => import('@/pages/admin/AdminStaffPage'));
-const AdminReportsPage = lazy(() => import('@/pages/admin/AdminReportsPage'));
 
-const DoctorLayout = lazy(() => import('@/layouts/DoctorLayout'));
-const DoctorFocusPage = lazy(() => import('@/pages/doctor/DoctorFocusPage'));
-const DoctorAppointmentsPage = lazy(() => import('@/pages/doctor/DoctorAppointmentsPage'));
-const DoctorSessionPage = lazy(() => import('@/pages/doctor/DoctorSessionPage'));
 
 function RouteLoader() {
   return (
@@ -106,23 +100,8 @@ export default function App() {
         <Route path="appointments" element={lazyElement(AdminAppointmentsPage)} />
         <Route path="patients" element={lazyElement(AdminPatientsPage)} />
         <Route path="calendar" element={lazyElement(AdminCalendarPage)} />
-        <Route path="staff" element={lazyElement(AdminStaffPage)} />
-        <Route path="reports" element={lazyElement(AdminReportsPage)} />
       </Route>
 
-      {/* Doctor focus mode */}
-      <Route
-        path="/doctor"
-        element={
-          <ProtectedRoute roles={['doctor', 'admin']}>
-            {lazyElement(DoctorLayout)}
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={lazyElement(DoctorFocusPage)} />
-        <Route path="appointments" element={lazyElement(DoctorAppointmentsPage)} />
-        <Route path="session/:appointmentId" element={lazyElement(DoctorSessionPage)} />
-      </Route>
     </Routes>
   );
 }

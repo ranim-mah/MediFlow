@@ -1,14 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
-const {
-  register,
-  login,
-  refresh,
-  logout,
-  me,
-  registerDeviceToken,
-  sendTestPush,
-} = require('../controllers/authController');
+const { register, login, refresh, logout, me } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
@@ -25,7 +17,5 @@ router.post('/login', login);
 router.post('/refresh', refresh);
 router.post('/logout', protect, logout);
 router.get('/me', protect, me);
-router.post('/device-token', protect, registerDeviceToken);
-router.post('/push-test', protect, sendTestPush);
 
 module.exports = router;

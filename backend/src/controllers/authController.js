@@ -5,7 +5,6 @@ const Patient = require('../models/Patient');
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt');
 const { asyncHandler, ApiError } = require('../utils/asyncHandler');
 const { ROLES } = require('../utils/constants');
-const { createNotificationAndPush } = require('../services/notificationService');
 
 /**
  * Helper: build token pair and persist refresh token on the user.
@@ -200,29 +199,3 @@ exports.registerDeviceToken = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * POST /api/auth/push-test
- * Sends a test push to the authenticated user.
- */
-exports.sendTestPush = asyncHandler(async (req, res) => {
-  const { title, body } = req.body || {};
-
-  const result = await createNotificationAndPush({
-    userId: req.user._id,
-    type: 'system',
-    title: String(title || 'Test notification Mediflow'),
-    body: String(body || 'Ceci est un test push depuis Mediflow.'),
-    link: '/patient/notifications',
-    priority: 'normal',
-    channels: ['in_app', 'push'],
-  });
-
-  res.json({
-    success: true,
-    message: 'Test push envoye',
-    data: {
-      notificationId: result.notification?._id,
-      pushResult: result.pushResult,
-    },
-  });
-});

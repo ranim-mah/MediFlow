@@ -5,7 +5,6 @@ const {
 } = require('../models');
 const { asyncHandler, ApiError } = require('../utils/asyncHandler');
 const { APPOINTMENT_STATUS } = require('../utils/constants');
-const { notifyAppointmentPatient } = require('../services/notificationService');
 
 /**
  * Helper: resolve the Patient document linked to the authenticated user.

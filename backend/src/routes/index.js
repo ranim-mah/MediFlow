@@ -15,7 +15,6 @@ router.use('/auth', authRoutes);
 router.use('/public', require('./publicRoutes'));
 router.use('/patient', require('./patientRoutes'));
 router.use('/admin', require('./adminRoutes'));
-router.use('/doctor', require('./doctorRoutes'));
 
 // Future routes:
 // router.use('/patients', require('./patientRoutes'));
